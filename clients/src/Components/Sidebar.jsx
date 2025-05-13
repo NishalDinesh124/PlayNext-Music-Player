@@ -1,16 +1,15 @@
 import React from 'react'
 import styled from 'styled-components'
 import { PiPlayBold } from "react-icons/pi";
-
-export default function SideBar() {
-
-    const SideBarContainer = styled.div`
+ const SideBarContainer = styled.div`
     display: flex;
     flex-direction: column;
-    border: solid 1px magenta;
-    padding: 1em;
+    padding: 2em;
     gap: 2em;
-    width:15%;
+    width:18%;
+   background-color: #171927;
+    border-top-left-radius: 1em;
+    
     `;
     const NavItem = styled.div`
     display: flex;
@@ -18,9 +17,11 @@ export default function SideBar() {
     font-weight: 500;
     `;
     const Brand = styled.div`
-        display: flex;
+  display: grid;
+    min-width: max-content;
+    max-width: 150px;
+    grid-template-columns: auto auto;
     font-size: large;
-    flex-direction: row;
     
     svg{
         font-size: 30px;
@@ -38,11 +39,15 @@ export default function SideBar() {
         font-size: larger;
         flex-direction: column;
     `
+
+export default function SideBar() {
+
+   
     return (
         <SideBarContainer>
-            <Brand><PiPlayBold/><Name>
-                Play Next<i>Music Player</i></Name>
-                
+            <Brand><PiPlayBold /><Name>
+                PlayNext<i>Music Player</i></Name>
+
             </Brand>
             <NavItem>Home</NavItem>
             <NavItem>Search</NavItem>
