@@ -9,7 +9,11 @@ import { PiPlayBold } from "react-icons/pi";
     width:18%;
    background-color: #171927;
     border-top-left-radius: 1em;
-    
+    border-bottom-left-radius:1em;
+
+    @media only screen and (max-width: 720px) {
+        display: none;
+    }
     `;
     const NavItem = styled.div`
     display: flex;

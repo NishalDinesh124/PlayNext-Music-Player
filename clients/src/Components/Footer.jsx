@@ -6,6 +6,10 @@ import { MdSkipNext, MdSkipPrevious } from "react-icons/md";
 
     ///styling///
     const ControlSection = styled.div`
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
         background-color: #171927;
         display: flex;
         width: 100%;
@@ -18,6 +22,9 @@ import { MdSkipNext, MdSkipPrevious } from "react-icons/md";
 
     const IconSection = styled.div`
     padding: 3vh;
+     @media only screen and (max-width: 720px) {
+       
+    }
     `
     const InfoSection = styled.div`
     width: 40%;
@@ -27,6 +34,11 @@ import { MdSkipNext, MdSkipPrevious } from "react-icons/md";
     width: 30%;
     svg{
         font-size: xxx-large;
+    }
+     @media only screen and (max-width: 720px) {
+       svg{
+        font-size: xx-large;
+       }
     }
     `
 
@@ -52,9 +64,40 @@ import { MdSkipNext, MdSkipPrevious } from "react-icons/md";
     const Timer = styled.div`
         
     `
+   const ProgressWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;
+
+const ProgressBarContainer = styled.div`
+  flex: 1;
+  height: 6px;
+  background-color: #2e2f4b;
+  border-radius: 5px;
+  overflow: hidden;
+  cursor: pointer;
+`;
+
+const Progress = styled.div`
+  height: 100%;
+  width: ${props => props.progress}%;
+  background-color: #ffffff;
+  transition: width 0.2s ease;
+`;
+
+const Time = styled.span`
+  color: #ccc;
+  font-size: 0.8rem;
+  min-width: 40px;
+`;
 
 export default function Footer(props) {
-
+const formatTime = (time) => {
+  const minutes = Math.floor(time / 60) || 0;
+  const seconds = Math.floor(time % 60) || 0;
+  return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+};
     
 
     return (
@@ -67,9 +110,20 @@ export default function Footer(props) {
             <InfoSection>
                 <p>{props.currentSongTitle}</p>
                 <Timer>
-                    {/* <div className='h-2 bg-green-500 rounded' style={{width: `${progressPervent}%`}}>
-
-                    </div> */}
+                     <ProgressWrapper>
+    <Time>{formatTime(props.currentTime)}</Time>
+    <ProgressBarContainer
+      onClick={(e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const percent = (clickX / rect.width) * 100;
+        props.handleSeek(percent);
+      }}
+    >
+      <Progress progress={props.audioProgress || 0} />
+    </ProgressBarContainer>
+    <Time>{formatTime(props.duration)}</Time>
+  </ProgressWrapper>
                 </Timer>
             </InfoSection>
             <Controllers>
@@ -81,7 +135,6 @@ export default function Footer(props) {
 
                 <MdSkipNext />
             </Controllers>
-            <Others></Others>
         </ControlSection>
     )
 }
