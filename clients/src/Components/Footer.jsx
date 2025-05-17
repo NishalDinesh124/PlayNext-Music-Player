@@ -5,54 +5,54 @@ import { MdSkipNext, MdSkipPrevious } from "react-icons/md";
 
 
 export default function Footer(props) {
-const formatTime = (time) => {
-  const minutes = Math.floor(time / 60) || 0;
-  const seconds = Math.floor(time % 60) || 0;
-  return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-};
-    
-
-    return (
-        <ControlSection>
-            <IconSection>
-                <ImgSection>
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/The_Weeknd_Portrait_by_Brian_Ziff.jpg/250px-The_Weeknd_Portrait_by_Brian_Ziff.jpg" alt="" />
-                </ImgSection>
-            </IconSection>
-            <InfoSection>
-                <p>{props.currentSongTitle}</p>
-                <Timer>
-                     <ProgressWrapper>
-    <Time>{formatTime(props.currentTime)}</Time>
-    <ProgressBarContainer
-      onClick={(e) => {
-        const rect = e.currentTarget.getBoundingClientRect();
-        const clickX = e.clientX - rect.left;
-        const percent = (clickX / rect.width) * 100;
-        props.handleSeek(percent);
-      }}
-    >
-      <Progress progress={props.audioProgress || 0} />
-    </ProgressBarContainer>
-    <Time>{formatTime(props.duration)}</Time>
-  </ProgressWrapper>
-                </Timer>
-            </InfoSection>
-            <Controllers>
-                <MdSkipPrevious /> <span onClick={()=> props.togglePlay(null,null)}>
-                    {props.isPlaying ? <AiTwotonePauseCircle />
-                        : <AiTwotonePlayCircle />}
-                </span>
+  const formatTime = (time) => {
+    const minutes = Math.floor(time / 60) || 0;
+    const seconds = Math.floor(time % 60) || 0;
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+  };
 
 
-                <MdSkipNext />
-            </Controllers>
-        </ControlSection>
-    )
+  return (
+    <ControlSection>
+      <IconSection>
+        <ImgSection>
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/The_Weeknd_Portrait_by_Brian_Ziff.jpg/250px-The_Weeknd_Portrait_by_Brian_Ziff.jpg" alt="" />
+        </ImgSection>
+      </IconSection>
+      <InfoSection>
+        <p>{props.currentSongTitle}</p>
+        <Timer>
+          <ProgressWrapper>
+            <Time>{formatTime(props.currentTime)}</Time>
+            <ProgressBarContainer
+              onClick={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                const clickX = e.clientX - rect.left;
+                const percent = (clickX / rect.width) * 100;
+                props.handleSeek(percent);
+              }}
+            >
+              <Progress progress={props.audioProgress || 0} />
+            </ProgressBarContainer>
+            <Time>{formatTime(props.duration)}</Time>
+          </ProgressWrapper>
+        </Timer>
+      </InfoSection>
+      <Controllers>
+        <MdSkipPrevious /> <span onClick={() => props.togglePlay(null, null)}>
+          {props.isPlaying ? <AiTwotonePauseCircle />
+            : <AiTwotonePlayCircle />}
+        </span>
+
+
+        <MdSkipNext />
+      </Controllers>
+    </ControlSection>
+  )
 }
 
-    ///styling///
-    const ControlSection = styled.div`
+///styling///
+const ControlSection = styled.div`
     position: absolute;
     left: 0;
     right: 0;
@@ -67,28 +67,33 @@ const formatTime = (time) => {
         align-items: center;
     `
 
-    const IconSection = styled.div`
+const IconSection = styled.div`
     padding: 3vh;
-     @media only screen and (max-width: 720px) {
-       
-    }
+    
     `
-    const InfoSection = styled.div`
+const InfoSection = styled.div`
     width: 40%;
     margin-left:5px;
     `
-    const Controllers = styled.div`
+const Controllers = styled.div`
     width: 30%;
     svg{
         font-size: xxx-large;
     }
-     @media only screen and (max-width: 720px) {
-       svg{
+   
+     @media (min-width: 385px) and (max-width: 720px) {
+      svg{
         font-size: xx-large;
        }
     }
+    @media only screen and (max-width: 385px) {
+        svg{
+        font-size: x-large;
+       }
+    }
+     
     `
-    const ImgSection = styled.div`
+const ImgSection = styled.div`
     width: 50px;
     height: 50px;
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25), 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -104,10 +109,10 @@ const formatTime = (time) => {
   object-fit: contain;
     }
     `
-    const Timer = styled.div`
+const Timer = styled.div`
         
     `
-   const ProgressWrapper = styled.div`
+const ProgressWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
