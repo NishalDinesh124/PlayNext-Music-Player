@@ -1,7 +1,8 @@
 import styled from 'styled-components'
 import MainComponent from './Components/mainComponent';
 import SideBar from './Components/Sidebar';
-import Footer from './Components/footer'
+import Footer from './Components/Footer';
+
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 

@@ -4,6 +4,53 @@ import { AiTwotonePlayCircle, AiTwotonePauseCircle } from "react-icons/ai";
 import { MdSkipNext, MdSkipPrevious } from "react-icons/md";
 
 
+export default function Footer(props) {
+const formatTime = (time) => {
+  const minutes = Math.floor(time / 60) || 0;
+  const seconds = Math.floor(time % 60) || 0;
+  return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+};
+    
+
+    return (
+        <ControlSection>
+            <IconSection>
+                <ImgSection>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/The_Weeknd_Portrait_by_Brian_Ziff.jpg/250px-The_Weeknd_Portrait_by_Brian_Ziff.jpg" alt="" />
+                </ImgSection>
+            </IconSection>
+            <InfoSection>
+                <p>{props.currentSongTitle}</p>
+                <Timer>
+                     <ProgressWrapper>
+    <Time>{formatTime(props.currentTime)}</Time>
+    <ProgressBarContainer
+      onClick={(e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const percent = (clickX / rect.width) * 100;
+        props.handleSeek(percent);
+      }}
+    >
+      <Progress progress={props.audioProgress || 0} />
+    </ProgressBarContainer>
+    <Time>{formatTime(props.duration)}</Time>
+  </ProgressWrapper>
+                </Timer>
+            </InfoSection>
+            <Controllers>
+                <MdSkipPrevious /> <span onClick={()=> props.togglePlay(null,null)}>
+                    {props.isPlaying ? <AiTwotonePauseCircle />
+                        : <AiTwotonePlayCircle />}
+                </span>
+
+
+                <MdSkipNext />
+            </Controllers>
+        </ControlSection>
+    )
+}
+
     ///styling///
     const ControlSection = styled.div`
     position: absolute;
@@ -87,50 +134,3 @@ const Time = styled.span`
   font-size: 0.8rem;
   min-width: 40px;
 `;
-
-export default function Footer(props) {
-const formatTime = (time) => {
-  const minutes = Math.floor(time / 60) || 0;
-  const seconds = Math.floor(time % 60) || 0;
-  return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-};
-    
-
-    return (
-        <ControlSection>
-            <IconSection>
-                <ImgSection>
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/The_Weeknd_Portrait_by_Brian_Ziff.jpg/250px-The_Weeknd_Portrait_by_Brian_Ziff.jpg" alt="" />
-                </ImgSection>
-            </IconSection>
-            <InfoSection>
-                <p>{props.currentSongTitle}</p>
-                <Timer>
-                     <ProgressWrapper>
-    <Time>{formatTime(props.currentTime)}</Time>
-    <ProgressBarContainer
-      onClick={(e) => {
-        const rect = e.currentTarget.getBoundingClientRect();
-        const clickX = e.clientX - rect.left;
-        const percent = (clickX / rect.width) * 100;
-        props.handleSeek(percent);
-      }}
-    >
-      <Progress progress={props.audioProgress || 0} />
-    </ProgressBarContainer>
-    <Time>{formatTime(props.duration)}</Time>
-  </ProgressWrapper>
-                </Timer>
-            </InfoSection>
-            <Controllers>
-                <MdSkipPrevious /> <span onClick={()=> props.togglePlay(null,null)}>
-                    {props.isPlaying ? <AiTwotonePauseCircle />
-                        : <AiTwotonePlayCircle />}
-                </span>
-
-
-                <MdSkipNext />
-            </Controllers>
-        </ControlSection>
-    )
-}
