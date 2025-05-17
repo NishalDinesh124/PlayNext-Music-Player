@@ -41,10 +41,6 @@ import { MdSkipNext, MdSkipPrevious } from "react-icons/md";
        }
     }
     `
-
-    const Others = styled.div`
-        width: 25%;
-    `
     const ImgSection = styled.div`
     width: 50px;
     height: 50px;
