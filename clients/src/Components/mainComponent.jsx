@@ -9,7 +9,7 @@ export default function MainComponent(props) {
     <Container>
       <audio
         ref={props.audioRef}
-        src={props.currentSong}
+        src={props.currentSongUrl}
         onEnded={props.handleEnded}
       ></audio>
       <Navbar>
@@ -18,27 +18,34 @@ export default function MainComponent(props) {
                           PlayNext<i>Music Player</i></Name>
         </Brand>
       </Navbar>
+      
       <TitleSection>
-        <ImgSection>
-          <img
-            src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/The_Weeknd_%28253662129%29.jpeg/250px-The_Weeknd_%28253662129%29.jpeg"
+        {props.isPlaying?<><ImgSection>
+        
+         <img
+            src={props.currentSongImg}
             alt="Album Cover"
           />
         </ImgSection>
         <InfoSection>
-          <h1>The Colors</h1>
+          <h2>{props.currentSongTitle}</h2>
           <span>Unknown artist</span>
-        </InfoSection>
+        </InfoSection></> : <Welcome>
+          <img src="/listen.svg" alt='Welcome'/>
+<h2>No song is playing</h2>
+
+                    </Welcome> }
+        
       </TitleSection>
 
       <MusicSection>
         {props.songs.map((song, index) => (
           <Contents key={index}>
             <Song>
-              <span onClick={() => props.togglePlay(song.url,song.title)}>
-                {props.isPlaying && props.currentSong === song.url ? <IoIosPause /> : <IoIosPlay />}
+              <span onClick={() => props.togglePlay(song.previewUrl,song.trackCensoredName,song.artworkUrl100)}>
+                {props.isPlaying && props.currentSongUrl === song.previewUrl ? <IoIosPause /> : <IoIosPlay />}
               </span>
-              <span>{song.title}</span>
+              <span>{song.trackCensoredName}</span>
             </Song>
             <Time>1:25</Time>
           </Contents>
@@ -63,6 +70,22 @@ export default function MainComponent(props) {
         grid-template-rows: 9% 46% 45%
     }
   `;
+  const Welcome = styled.div`
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    img{
+      width: 400px;
+    }
+    @media only screen and (max-width: 720px) {
+        img{
+          width: 205px;
+        }
+    }
+  `
   const Navbar = styled.div`
     display: none;
    @media only screen and (max-width: 720px) {

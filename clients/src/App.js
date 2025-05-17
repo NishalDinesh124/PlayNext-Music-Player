@@ -2,9 +2,10 @@ import styled from 'styled-components'
 import MainComponent from './Components/mainComponent';
 import SideBar from './Components/Sidebar';
 import Footer from './Components/Footer';
-
+import axios from "axios"
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
+import { getSongsRoute } from './Utils/APIRoutes';
 
 
 function App() {
@@ -15,83 +16,62 @@ function App() {
   const audioRef = useRef(null);
   const [audioProgress, setAudioProgress] = useState(0);
   const [currentSongTitle, setCurrentSongTitle] = useState(null);
+  const [currentSongImg, setCurrentSongImage] = useState(null);
   const [currentTime, setCurrentTime] = useState(0);
-const [duration, setDuration] = useState(0);
+  const [songs, setSongs] = useState([]);
+  const [duration, setDuration] = useState(0);
 
-  const songs = [
-    {
-      title: 'In the Forest 1',
-      url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
-    },
-    {
-      title: 'In the Forest 2',
-      url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3'
-    },
-    {
-      title: 'In the Forest 3',
-      url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3'
-    },
-    {
-      title: 'After hours',
-      url: '/song.mp3'
-    },
-    {
-      title: 'In the Forest 3',
-      url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3'
-    },
-    {
-      title: 'In the Forest 3',
-      url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3'
-    },
-    {
-      title: 'In the Forest 3',
-      url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3'
-    },
-    {
-      title: 'In the Forest 3',
-      url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3'
-    },
-    {
-      title: 'In the Forest 3',
-      url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3'
-    },
 
-  ];
-
+  ///Functions
   const handleEnded = () => {
     setIsPlaying(false);
   };
 
   useEffect(() => {
-  const audio = audioRef.current;
+    const audio = audioRef.current;
 
-  const updateProgress = () => {
-    if (audio && audio.duration) {
-      setCurrentTime(audio.currentTime);
+    const updateProgress = () => {
+      if (audio && audio.duration) {
+        setCurrentTime(audio.currentTime);
+        setDuration(audio.duration);
+        const progress = (audio.currentTime / audio.duration) * 100;
+        setAudioProgress(progress);
+      }
+    };
+
+    audio?.addEventListener('timeupdate', updateProgress);
+    audio?.addEventListener('loadedmetadata', () => {
       setDuration(audio.duration);
-      const progress = (audio.currentTime / audio.duration) * 100;
-      setAudioProgress(progress);
-    }
-  };
+    });
 
-  audio?.addEventListener('timeupdate', updateProgress);
-  audio?.addEventListener('loadedmetadata', () => {
-    setDuration(audio.duration);
-  });
+    return () => {
+      audio?.removeEventListener('timeupdate', updateProgress);
+    };
+  }, []);
 
-  return () => {
-    audio?.removeEventListener('timeupdate', updateProgress);
-  };
-}, []);
+  //Fetching songs from backend
+  useEffect(() => {
+    axios.get(getSongsRoute)
+      .then(response => {
+        console.log(response.data.results);
+        setSongs(response.data.results);
+      })
+      .catch(error => {
+        console.error('Axios Error:', error);
+      });
+  }, [])
+
+
+
 
   // Play/pause Control
-  const togglePlay = async(songUrl,songTitle) => {
+  const togglePlay = async (songUrl, songTitle, songImg) => {
     const audio = audioRef.current;
     if (!audio) return;
 
     if (currentSongUrl === songUrl) {
       console.log("First if");
-      
+
       if (isPlaying) {
         audio.pause();
         setIsPlaying(false);
@@ -99,25 +79,25 @@ const [duration, setDuration] = useState(0);
         audio.play().catch((err) => console.error("Play error:", err));
         setIsPlaying(true);
       }
-    } else if(songUrl === null){
+    } else if (songUrl === null) {
       console.log("second if");
-      
-      if(isPlaying){
+
+      if (isPlaying) {
         audio.pause();
         setIsPlaying(false)
-      }else{
+      } else {
         setIsPlaying(true);
         audio.play().catch((err) => console.error("Play error:", err));
       }
-     setIsPlaying(!isPlaying)
-    }else{
+      setIsPlaying(!isPlaying)
+    } else {
       console.log("Third if");
-      console.log(songUrl);
-      
-      
-       setCurrentSongUrl(songUrl);
+      setCurrentSongUrl(songUrl);
       setCurrentSongTitle(songTitle)
+      setCurrentSongImage(songImg)
       setIsPlaying(true);
+      console.log(currentSongUrl);
+
 
       // Small timeout to wait for src update
       setTimeout(() => {
@@ -130,38 +110,47 @@ const [duration, setDuration] = useState(0);
 
   //Seek on progress bar click
   const handleSeek = (percent) => {
-  if (audioRef.current && duration) {
-    audioRef.current.currentTime = (percent / 100) * duration;
-  }
-};
+    if (audioRef.current && duration) {
+      audioRef.current.currentTime = (percent / 100) * duration;
+    }
+  };
   return (
     <AppContainer>
       <MainComponentWrapper>
         <TopSection>
           <SideBar />
-          <MainComponent togglePlay={togglePlay} songs={songs} isPlaying={isPlaying} handleEnded={handleEnded} audioRef={audioRef} currentSong={currentSongUrl} />
+          <MainComponent 
+          togglePlay={togglePlay} 
+          songs={songs} 
+          isPlaying={isPlaying} 
+          handleEnded={handleEnded} 
+          audioRef={audioRef} 
+          currentSongUrl={currentSongUrl} 
+          currentSongTitle={currentSongTitle} 
+          currentSongImg={currentSongImg} 
+          />
         </TopSection>
         {currentSongUrl && (
-  <motion.div
-    initial={{ opacity: 0, y: 100 }}
-    animate={{ opacity: 1, y: 0 }}
-    exit={{ opacity: 0, y: 100 }} 
-    transition={{ duration: 0.5, ease: 'easeOut' }}
-  >
-    <Footer
-      togglePlay={togglePlay}
-  isPlaying={isPlaying}
-  currentSongUrl={currentSongUrl}
-  currentSongTitle={currentSongTitle}
-  audioProgress={audioProgress}
-  handleSeek={handleSeek}
-  currentTime={currentTime}
-  duration={duration}
-    />
-  </motion.div>
-)}
-       
-       
+          <motion.div
+            initial={{ opacity: 0, y: 100 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 100 }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
+          >
+            <Footer
+              togglePlay={togglePlay}
+              isPlaying={isPlaying}
+              currentSongUrl={currentSongUrl}
+              currentSongTitle={currentSongTitle}
+              audioProgress={audioProgress}
+              handleSeek={handleSeek}
+              currentTime={currentTime}
+              duration={duration}
+            />
+          </motion.div>
+        )}
+
+
       </MainComponentWrapper>
     </AppContainer>
   );
