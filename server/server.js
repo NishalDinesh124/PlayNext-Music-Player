@@ -8,10 +8,7 @@ const authRoutes = require('./Routes/auth');
 const app = express();
 
 // Use correct allowed origin
-const allowedOrigin = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : 'http://localhost:3000';
-
+const allowedOrigin = "https://play-next-music-player.vercel.app" || "http://localhost:3000"
 // CORS setup
 app.use(cors({
   origin: allowedOrigin,
