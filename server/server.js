@@ -1,14 +1,45 @@
+require('dotenv').config();
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
+const mongoose = require('mongoose');
+const authRoutes = require('./Routes/auth');
+
 const app = express();
-const authRoutes =  require('./Routes/auth');
 
-app.use(cors());
+// Use correct allowed origin
+const allowedOrigin = process.env.VERCEL_URL
+  ? `https://${process.env.VERCEL_URL}`
+  : 'http://localhost:3000';
 
+// CORS setup
+app.use(cors({
+  origin: allowedOrigin,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
+}));
 
- app.use('/api/auth', authRoutes);
+app.use(express.json()); // Required to parse JSON bodies
+app.use('/api/auth', authRoutes);
 
+const uri = process.env.MONGO_URL;
+const PORT = process.env.PORT || 5000;
 
+const startServer = async () => {
+  try {
+    console.log("Mongo URI:", uri);
 
-app.listen(5000, () => console.log('Server running on port 5000'));
+    await mongoose.connect(uri);
+
+    console.log("DB Connection Successful");
+
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+
+  } catch (err) {
+    console.error("Mongo connection failed:", err.message);
+  }
+};
+
+startServer();

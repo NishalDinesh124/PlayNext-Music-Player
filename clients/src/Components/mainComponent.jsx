@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { IoIosPlay, IoIosPause } from "react-icons/io";
 import { PiPlayBold } from "react-icons/pi";
+import { CiHeart } from "react-icons/ci";
 
 export default function MainComponent(props) {
 
@@ -47,6 +48,7 @@ export default function MainComponent(props) {
               </span>
               <span>{song.trackCensoredName}</span>
             </Song>
+            <CiHeart />
             <Time>1:25</Time>
           </Contents>
         ))}
@@ -83,6 +85,17 @@ export default function MainComponent(props) {
     @media only screen and (max-width: 720px) {
         img{
           width: 205px;
+        }
+    }
+    
+     @media (min-height: 540px) and (max-height:800px) {
+       img{
+          width: 205px;
+        }
+    }
+     @media only screen and (max-height: 540px) {
+        img{
+          width: 150px;
         }
     }
   `
@@ -175,7 +188,7 @@ max-width: 130px;
    border-radius: 1em;
     width: 83%;
     padding: 12px;
-    grid-template-columns: 87% 13%;
+    grid-template-columns: 78% 10% 12%;
     display: grid
 ;
    

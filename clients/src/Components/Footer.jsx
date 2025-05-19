@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { AiTwotonePlayCircle, AiTwotonePauseCircle } from "react-icons/ai";
 import { MdSkipNext, MdSkipPrevious } from "react-icons/md";
+import { CiHeart } from "react-icons/ci";
 
 
 export default function Footer(props) {
