@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { PiPlayBold } from "react-icons/pi";
+import { usePlayer } from '../Contexts/PlayerContext';
  const SideBarContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -19,6 +20,8 @@ import { PiPlayBold } from "react-icons/pi";
     display: flex;
     font-size: x-large;
     font-weight: 500;
+    cursor: pointer;
+
     `;
     const Brand = styled.div`
   display: grid;
@@ -45,18 +48,18 @@ import { PiPlayBold } from "react-icons/pi";
     `
 
 export default function SideBar() {
-
-   
+    const{
+        setActiveTab
+    } = usePlayer();
     return (
         <SideBarContainer>
             <Brand><PiPlayBold /><Name>
                 PlayNext<i>Music Player</i></Name>
-
             </Brand>
-            <NavItem>Home</NavItem>
+            <NavItem onClick={()=> setActiveTab("home")}>Home</NavItem>
             <NavItem>Search</NavItem>
             <NavItem>Library</NavItem>
-            <NavItem>Playlists</NavItem>
+            <NavItem onClick={()=> setActiveTab("playlist")}>Playlists</NavItem>
         </SideBarContainer>
     )
 }

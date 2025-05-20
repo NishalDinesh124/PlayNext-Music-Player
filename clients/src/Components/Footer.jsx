@@ -2,10 +2,21 @@ import React from 'react'
 import styled from 'styled-components'
 import { AiTwotonePlayCircle, AiTwotonePauseCircle } from "react-icons/ai";
 import { MdSkipNext, MdSkipPrevious } from "react-icons/md";
-import { CiHeart } from "react-icons/ci";
+//import { CiHeart } from "react-icons/ci";
+import { usePlayer } from '../Contexts/PlayerContext';
 
 
-export default function Footer(props) {
+export default function Footer() {
+const{
+  togglePlay,
+  isPlaying,
+  currentSongTitle,
+  audioProgress,
+  handleSeek,
+  currentTime,
+  duration
+} = usePlayer();
+
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60) || 0;
     const seconds = Math.floor(time % 60) || 0;
@@ -21,27 +32,27 @@ export default function Footer(props) {
         </ImgSection>
       </IconSection>
       <InfoSection>
-        <p>{props.currentSongTitle}</p>
+        <p>{currentSongTitle}</p>
         <Timer>
           <ProgressWrapper>
-            <Time>{formatTime(props.currentTime)}</Time>
+            <Time>{formatTime(currentTime)}</Time>
             <ProgressBarContainer
               onClick={(e) => {
                 const rect = e.currentTarget.getBoundingClientRect();
                 const clickX = e.clientX - rect.left;
                 const percent = (clickX / rect.width) * 100;
-                props.handleSeek(percent);
+                handleSeek(percent);
               }}
             >
-              <Progress progress={props.audioProgress || 0} />
+              <Progress progress={audioProgress || 0} />
             </ProgressBarContainer>
-            <Time>{formatTime(props.duration)}</Time>
+            <Time>{formatTime(duration)}</Time>
           </ProgressWrapper>
         </Timer>
       </InfoSection>
       <Controllers>
-        <MdSkipPrevious /> <span onClick={() => props.togglePlay(null, null)}>
-          {props.isPlaying ? <AiTwotonePauseCircle />
+        <MdSkipPrevious /> <span onClick={() => togglePlay(null, null)}>
+          {isPlaying ? <AiTwotonePauseCircle />
             : <AiTwotonePlayCircle />}
         </span>
 
@@ -78,6 +89,7 @@ const InfoSection = styled.div`
     `
 const Controllers = styled.div`
     width: 30%;
+    margin-left: 2em;
     svg{
         font-size: xxx-large;
     }
@@ -130,7 +142,7 @@ const ProgressBarContainer = styled.div`
 
 const Progress = styled.div`
   height: 100%;
-  width: ${props => props.progress}%;
+  width: ${audioProgress => audioProgress.progress}%;
   background-color: #ffffff;
   transition: width 0.2s ease;
 `;

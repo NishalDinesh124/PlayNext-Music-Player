@@ -3,9 +3,10 @@ import {BrowserRouter,Routes, Route} from "react-router-dom";
 import Home from './Pages/Home';
 import Auth from './Pages/Auth'
 import { ToastContainer } from 'react-toastify';
+import { PlayerProvider } from './Contexts/PlayerContext';
 function App() {
   return (
-    <AppContainer>
+    <PlayerProvider> <AppContainer>
       <ToastContainer/>
       <BrowserRouter>
       <Routes>
@@ -15,7 +16,8 @@ function App() {
       </BrowserRouter>
       
     </AppContainer>
-
+</PlayerProvider>
+   
   );
 }
 

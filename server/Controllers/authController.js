@@ -40,15 +40,3 @@ module.exports.register = async (req, res, next) => {
         next(err)
     }
 }
-
-module.exports.getSongs = async (req, res, next) => {
-    try {
-        const response = await axios.get('https://itunes.apple.com/search?term=lofi&media=music');
-        res.json(response.data);
-
-    } catch (err) {
-        res.status(500).json({ error: 'Failed to fetch from Deezer' });
-        console.log("Error happened");
-
-    }
-}
