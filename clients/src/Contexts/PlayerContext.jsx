@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useState, useRef,useEffect} from "react";
+import React, { createContext, useContext, useState, useRef, useEffect } from "react";
 import axios from "axios";
-import { getSongsRoute } from "../Utils/APIRoutes";
+import { getSongsRoute , getLikedSongs} from "../Utils/APIRoutes";
 
 
 
@@ -10,7 +10,7 @@ export const usePlayer = () => useContext(PlayerContext);
 
 export const PlayerProvider = ({ children }) => {
     //STATES///
-    
+
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentSongUrl, setCurrentSongUrl] = useState(null);
     const audioRef = useRef(null);
@@ -20,8 +20,10 @@ export const PlayerProvider = ({ children }) => {
     const [artist, setArtist] = useState();
     const [currentTime, setCurrentTime] = useState(0);
     const [apiSongs, setApiSongs] = useState([]);
+    const [likedSongs, setLikedSongs] = useState([]);
     const [duration, setDuration] = useState(0);
-   
+    const [currentUser, setCurrentUser] = useState([]);
+
     const [activeTab, setActiveTab] = useState("home") //setting home/playlist component accordingly
     const [sidebar, setSidebar] = useState(true) //setting sidebar visibility
 
@@ -82,43 +84,70 @@ export const PlayerProvider = ({ children }) => {
     };
 
     useEffect(() => {
-            const audio = audioRef.current;
-            const updateProgress = () => {
-                if (audio && audio.duration) {
-                    setCurrentTime(audio.currentTime);
-                    setDuration(audio.duration);
-                    const progress = (audio.currentTime / audio.duration) * 100;
-                    setAudioProgress(progress);
-                }
-            };
-    
-            audio?.addEventListener('timeupdate', updateProgress);
-            audio?.addEventListener('loadedmetadata', () => {
+        const audio = audioRef.current;
+        const updateProgress = () => {
+            if (audio && audio.duration) {
+                setCurrentTime(audio.currentTime);
                 setDuration(audio.duration);
-            });
-            return () => {
-                audio?.removeEventListener('timeupdate', updateProgress);
-            };
-        }, []); 
-       
+                const progress = (audio.currentTime / audio.duration) * 100;
+                setAudioProgress(progress);
+            }
+        };
 
-         //Fetching songs from backend
-         useEffect(() => {
-             axios.get(getSongsRoute)
-                 .then(response => {
-                     console.log(response.data.results);
-                     setApiSongs(response.data.results);
-                 })
-                 .catch(error => {
-                     console.error('Axios Error:', error);
-                 });
-         }, [])
-    
+        audio?.addEventListener('timeupdate', updateProgress);
+        audio?.addEventListener('loadedmetadata', () => {
+            setDuration(audio.duration);
+        });
+        return () => {
+            audio?.removeEventListener('timeupdate', updateProgress);
+        };
+    }, []);
+
+
+    useEffect(() => {
+        getCurrentUser();// getting user from local storage
+        getApiSongs(); //getting songs from backend
+        handleGetLikedSongs(); // getting liked songs by user
+    }, [])
+
+    const getCurrentUser = async () => {
+         const user =await JSON.parse(localStorage.getItem('playnext-user'));
+        setCurrentUser(user)
+    }
+
+    const getApiSongs = () => {
+        axios.get(getSongsRoute)
+            .then(response => {
+                console.log(response.data.results);
+                setApiSongs(response.data.results);
+            })
+            .catch(error => {
+                console.error('Axios Error:', error);
+            });
+    }
+
+    const handleGetLikedSongs =async ()=>{
+        try{
+ const user =await JSON.parse(localStorage.getItem('playnext-user'));
+         console.log(user._id);
+        const response = await axios.post(getLikedSongs,{
+            userId : user._id
+        })
+        console.log(response.data);
+        
+        setLikedSongs(response.data)
+        }catch(err){
+            console.log("An error occured");
+            
+        }
+         
+    }
     return (
         <PlayerContext.Provider
             value={{
                 togglePlay,
                 apiSongs,
+                likedSongs,
                 isPlaying,
                 handleEnded,
                 audioRef,
@@ -133,7 +162,8 @@ export const PlayerProvider = ({ children }) => {
                 activeTab,
                 setActiveTab,
                 sidebar,
-                setSidebar
+                setSidebar,
+                currentUser
             }}
         >
             {children}

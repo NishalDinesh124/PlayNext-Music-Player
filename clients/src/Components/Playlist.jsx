@@ -1,99 +1,57 @@
 import React from 'react'
 import styled from 'styled-components';
-import { PiPlayBold } from "react-icons/pi";
-import { usePlayer } from '../Contexts/PlayerContext';
 import { motion } from 'framer-motion';
-import { RiMenuUnfold2Fill } from "react-icons/ri";
+import { usePlayer } from '../Contexts/PlayerContext';
+
+const imageList = [
+  '/happy.svg',
+
+];
+
+// Animation variants
+const contentVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: (i) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.2,
+      duration: 0.6,
+      ease: 'easeOut',
+    }
+  })
+};
 
 export default function Playlist() {
-    const { setActiveTab,sidebar,setSidebar } = usePlayer();
+  const { setActiveTab } = usePlayer();
 
-    return (
-        <MotionContainer>
-             <Navbar>
-                    <Brand>
-                      <PiPlayBold />
-                      <Name>
-                        PlayNext<i>Music Player</i>
-                      </Name>
-                    </Brand>
-                    <RiMenuUnfold2Fill onClick={()=>{setSidebar(!sidebar)}}/>
-                  </Navbar>
-            <Main>
-                <Content onClick={() => { setActiveTab("liked") }}>
-                    <ImgSection>
-                        <img src='/happy.svg' alt="Album Cover" />
-                    </ImgSection>
-                    <h3>Liked Songs</h3>
-                </Content>
-
-                <Content>
-                    <ImgSection>
-                        <img src='/happy1.svg' alt="Album Cover" />
-                    </ImgSection>
-                    <h3>Liked Songs</h3>
-                </Content>
-
-                <Content>
-                    <ImgSection>
-                        <img src='/happy2.svg' alt="Album Cover" />
-                    </ImgSection>
-                    <h3>Liked Songs</h3>
-                </Content>
-
-                <Content>
-                    <ImgSection>
-                        <img src='/happy3.svg' alt="Album Cover" />
-                    </ImgSection>
-                    <h3>Liked Songs</h3>
-                </Content>
-
-                <Content>
-                    <ImgSection>
-                        <img src='/happy4.svg' alt="Album Cover" />
-                    </ImgSection>
-                    <h3>Liked Songs</h3>
-                </Content>
-
-                <Content>
-                    <ImgSection>
-                        <img src='/happy5.svg' alt="Album Cover" />
-                    </ImgSection>
-                    <h3>Liked Songs</h3>
-                </Content>
-            </Main>
-        </MotionContainer>
-    )
+  return (
+    <Main>
+      {imageList.map((src, index) => (
+        <MotionContent
+          key={index}
+          custom={index}
+          variants={contentVariants}
+          initial="hidden"
+          animate="visible"
+          onClick={() => index === 0 && setActiveTab("liked")}
+        >
+          <ImgSection>
+            <img src={src} alt={`Album Cover ${index + 1}`} />
+          </ImgSection>
+          <h3>Liked Songs</h3>
+        </MotionContent>
+      ))}
+    </Main>
+  );
 }
 
-// Styled components
-const MotionContainer = styled(motion.div)`
-  max-height: 100vh;
-  display: grid;
-  padding-top: 4em;
-  width: 83%;
-  background-color: #202333;
-  border-top-right-radius: 1em;
-  border-bottom-right-radius: 1em;
-  gap: 2rem;
-  justify-items: center;
-
-  @media only screen and (max-width: 720px) {
-    width: 100%;
-    border-radius: 1em;
-  }
-`;
-
+// Styled Components
 const Main = styled.div`
   display: grid;
   width: 100%;
   overflow: auto;
-  grid-template-columns: auto auto auto; 
-
-  @media only screen and (max-width: 720px) {
-    grid-template-columns: auto auto; 
-    padding: 2em;
-  }
+  grid-template-columns: auto auto auto;
 
   @media only screen and (max-width: 1300px) {
     grid-template-columns: auto auto;
@@ -101,48 +59,7 @@ const Main = styled.div`
   }
 `;
 
-const Navbar = styled.div`
-  width: 75%;
-  display: none;
-
-  @media only screen and (max-width: 720px) {
-    display: flex;
-    padding: 1em;
-    justify-content: space-between;
-    svg{
-      cursor: pointer;
-      font-size: 30px;
-    }
-  }
-`;
-
-const Brand = styled.div`
-  display: grid;
-  min-width: max-content;
-  max-width: 150px;
-  grid-template-columns: auto auto;
-  font-size: large;
-
-  svg {
-    font-size: 30px;
-    margin: 5px;
-  }
-
-  i {
-    font-size: small;
-    font-weight: 300;
-    color: grey;
-  }
-`;
-
-const Name = styled.div`
-  display: flex;
-  font-weight: 400;
-  font-size: larger;
-  flex-direction: column;
-`;
-
-const Content = styled.div`
+const MotionContent = styled(motion.div)`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -185,3 +102,4 @@ const ImgSection = styled.div`
     max-height: 130px;
   }
 `;
+

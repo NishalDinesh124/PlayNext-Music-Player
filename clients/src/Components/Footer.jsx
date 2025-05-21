@@ -14,7 +14,8 @@ const{
   audioProgress,
   handleSeek,
   currentTime,
-  duration
+  duration,
+  currentSongImg
 } = usePlayer();
 
   const formatTime = (time) => {
@@ -28,14 +29,25 @@ const{
     <ControlSection>
       <IconSection>
         <ImgSection>
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/The_Weeknd_Portrait_by_Brian_Ziff.jpg/250px-The_Weeknd_Portrait_by_Brian_Ziff.jpg" alt="" />
+          <img src={currentSongImg} alt="" />
         </ImgSection>
+         <p>{currentSongTitle}</p>
       </IconSection>
+      
+      <Controllers>
+        <MdSkipPrevious /> <span onClick={() => togglePlay(null, null)}>
+          {isPlaying ? <AiTwotonePauseCircle />
+            : <AiTwotonePlayCircle />}
+        </span>
+
+
+        <MdSkipNext />
+      </Controllers>
       <InfoSection>
-        <p>{currentSongTitle}</p>
+       
         <Timer>
           <ProgressWrapper>
-            <Time>{formatTime(currentTime)}</Time>
+          <Time>{formatTime(currentTime)}</Time> 
             <ProgressBarContainer
               onClick={(e) => {
                 const rect = e.currentTarget.getBoundingClientRect();
@@ -46,19 +58,10 @@ const{
             >
               <Progress progress={audioProgress || 0} />
             </ProgressBarContainer>
-            <Time>{formatTime(duration)}</Time>
+            <Time>{formatTime(duration)}</Time> 
           </ProgressWrapper>
         </Timer>
       </InfoSection>
-      <Controllers>
-        <MdSkipPrevious /> <span onClick={() => togglePlay(null, null)}>
-          {isPlaying ? <AiTwotonePauseCircle />
-            : <AiTwotonePlayCircle />}
-        </span>
-
-
-        <MdSkipNext />
-      </Controllers>
     </ControlSection>
   )
 }
@@ -70,7 +73,8 @@ const ControlSection = styled.div`
     right: 0;
     bottom: 0;
         background-color: #171927;
-        display: flex;
+        display: grid;
+        grid-template-columns: 40% 60%;
         width: 100%;
         border-top: solid 1px #2e2f4b;
         border-bottom-left-radius: 1em;
@@ -81,14 +85,17 @@ const ControlSection = styled.div`
 
 const IconSection = styled.div`
     padding: 3vh;
+    display: flex;
+    gap: 1em;
     
     `
 const InfoSection = styled.div`
-    width: 40%;
+    width: 100%;
     margin-left:5px;
+    margin-bottom: 5px;
+    min-width: 240px;
     `
 const Controllers = styled.div`
-    width: 30%;
     margin-left: 2em;
     svg{
         font-size: xxx-large;

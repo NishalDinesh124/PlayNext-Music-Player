@@ -2,12 +2,12 @@ import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import axios from 'axios';
 import { IoIosPlay, IoIosPause } from "react-icons/io";
-import { PiPlayBold } from "react-icons/pi";
 import { CiHeart } from "react-icons/ci";
 import { addToLiked } from '../Utils/APIRoutes';
 import { toast } from 'react-toastify';
 import { usePlayer } from '../Contexts/PlayerContext';
-import { RiMenuUnfold2Fill } from "react-icons/ri";
+//import { motion } from 'framer-motion';
+
 
 export default function MainComponent() {
   const {
@@ -19,8 +19,6 @@ export default function MainComponent() {
     isPlaying,
     currentUser,
     artist,
-    sidebar,
-    setSidebar
   } = usePlayer();
 
   const handleAddToLiked = async (title, url, img, artist) => {
@@ -44,28 +42,19 @@ export default function MainComponent() {
   };
 
   return (
-    <Container>
-      <Navbar>
-        <Brand>
-          <PiPlayBold />
-          <Name>
-            PlayNext<i>Music Player</i>
-          </Name>
-        </Brand>
-        <RiMenuUnfold2Fill onClick={()=>{setSidebar(!sidebar)}}/>
-      </Navbar>
-
+    
+<>
       <TitleSection>
         {isPlaying ? (
-          <>
-            <ImgSection>
+          <Section><ImgSection>
               <img src={currentSongImg} alt="Album Cover" />
             </ImgSection>
             <InfoSection>
               <h2>{currentSongTitle}</h2>
               <span>{artist}</span>
             </InfoSection>
-          </>
+          </Section>
+            
         ) : (
           <Welcome>
             <img src="/listen.svg" alt='Welcome' />
@@ -88,7 +77,7 @@ export default function MainComponent() {
           </Contents>
         ))}
       </MusicSection>
-    </Container>
+</>
   );
 }
 
@@ -105,21 +94,6 @@ const fadeInUp = keyframes`
 `;
 
 // Styled-components
-const Container = styled.div`
-  display: grid;
-  grid-template-rows: 58% 42%;
-  width: 83%;
-  background-color: #202333;
-  border-top-right-radius: 1em;
-  border-bottom-right-radius: 1em;
-
-  @media only screen and (max-width: 720px) {
-    width: 100%;
-    border-radius: 1em;
-    grid-template-rows: 9% 46% 45%;
-  }
-`;
-
 const Welcome = styled.div`
   display: flex;
   width: 100%;
@@ -150,46 +124,6 @@ const Welcome = styled.div`
     }
   }
 `;
-
-const Navbar = styled.div`
-  display: none;
-
-  @media only screen and (max-width: 720px) {
-    display: flex;
-    padding: 1em;
-    justify-content: space-between;
-    svg{
-      font-size: 30px;
-    }
-  }
-`;
-
-const Brand = styled.div`
-  display: grid;
-  min-width: max-content;
-  max-width: 150px;
-  grid-template-columns: auto auto;
-  font-size: large;
-
-  svg {
-    font-size: 30px;
-    margin: 5px;
-  }
-
-  i {
-    font-size: small;
-    font-weight: 300;
-    color: grey;
-  }
-`;
-
-const Name = styled.div`
-  display: flex;
-  font-weight: 400;
-  font-size: larger;
-  flex-direction: column;
-`;
-
 const TitleSection = styled.div`
   display: flex;
   padding: 4vw;
@@ -201,6 +135,10 @@ const TitleSection = styled.div`
     gap: 0px;
   }
 `;
+
+const Section = styled.div`
+
+`
 
 const ImgSection = styled.div`
   width: 220px;
@@ -268,7 +206,8 @@ const Contents = styled.div`
   grid-template-columns: 78% 10% 12%;
   display: grid;
   svg {
-    cursor: pointer;
+    visibility:hidden;
+    font-size: 20px;
   }
 
   opacity: 0;

@@ -8,7 +8,6 @@ export default function SideBar() {
     const{
         setActiveTab,
         sidebar,
-        setSidebar
     } = usePlayer();
 
     ///handling sidebar clicks
@@ -67,6 +66,9 @@ const SideBarContainer = styled(motion.div)`
     max-width: 150px;
     grid-template-columns: auto auto;
     font-size: large;
+    @media only screen and (max-width: 720px) {
+        display: none;
+    }
     
     svg{
         font-size: 30px;

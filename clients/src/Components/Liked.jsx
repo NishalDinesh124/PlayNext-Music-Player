@@ -1,66 +1,28 @@
 import React from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
 import { IoIosPlay, IoIosPause } from "react-icons/io";
-import { PiPlayBold } from "react-icons/pi";
 import { CiHeart } from "react-icons/ci";
-import { addToLiked } from '../Utils/APIRoutes';
-import { toast } from 'react-toastify';
 import { usePlayer } from '../Contexts/PlayerContext';
 import { motion } from 'framer-motion'; 
-import { RiMenuUnfold2Fill } from "react-icons/ri";
-
 export default function Liked() {
   const {
-    apiSongs,
+    likedSongs,
     currentSongUrl,
     togglePlay,
     isPlaying,
-    currentUser,
-    sidebar,
-    setSidebar
   } = usePlayer();
 
-  const handleAddToLiked = async (title, url, img, artist) => {
-    try {
-      const res = await axios.post(addToLiked, {
-        title,
-        url,
-        img,
-        artist,
-        user: currentUser._id
-      });
-
-      if (res.data.status === true) {
-        toast.success("Song added to playlist");
-      } else {
-        toast.error("Error adding song to playlist");
-      }
-    } catch (err) {
-      console.log("Error adding song");
-    }
-  };
 
   return (
-    <Container>
-      <Navbar>
-        <Brand>
-          <PiPlayBold />
-          <Name>
-            PlayNext<i>Music Player</i>
-          </Name>
-        </Brand>
-        <RiMenuUnfold2Fill onClick={() => { setSidebar(!sidebar) }} />
-      </Navbar>
+    <><TopBar><h2>Liked Songs</h2></TopBar>
 
-      <TopBar><h2>Liked Songs</h2></TopBar>
 
-      <MotionMusicSection
+{likedSongs.length >0 ?<MotionMusicSection
         variants={listVariant}
         initial="hidden"
         animate="visible"
       >
-        {apiSongs.map((song, index) => (
+        {likedSongs.map((song, index) => (
           <MotionContents
             key={index}
             variants={itemVariant}
@@ -69,33 +31,33 @@ export default function Liked() {
             <Song>
               <span onClick={() =>
                 togglePlay(
-                  song.previewUrl,
-                  song.trackCensoredName,
-                  song.artworkUrl100,
-                  song.artistName
+                  song.url,
+                  song.title,
+                  song.img,
+                  song.artist
                 )
               }>
-                {isPlaying && currentSongUrl === song.previewUrl
+                {isPlaying && currentSongUrl === song.url
                   ? <IoIosPause />
                   : <IoIosPlay />}
               </span>
-              <span>{song.trackCensoredName}</span>
+              <span>{song.title}</span>
             </Song>
 
-            <CiHeart onClick={() =>
-              handleAddToLiked(
-                song.trackCensoredName,
-                song.previewUrl,
-                song.artworkUrl100,
-                song.artistName
-              )
-            } />
+            <CiHeart/>
 
             <Time>0:30</Time>
           </MotionContents>
         ))}
-      </MotionMusicSection>
-    </Container>
+      </MotionMusicSection>: <Welcome>
+            <img src="/listen.svg" alt='Welcome' />
+            <h2>No songs in this list</h2>
+          </Welcome>}
+      </>
+     
+
+      
+   
   );
 }
 
@@ -109,7 +71,37 @@ const listVariant = {
     },
   },
 };
+const Welcome = styled.div`
+  display: flex;
+  margin-bottom: 28em;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 
+  img {
+    width: 400px;
+  }
+
+  @media only screen and (max-width: 720px) {
+    img {
+      width: 205px;
+    }
+  }
+
+  @media (min-height: 540px) and (max-height: 800px) {
+    img {
+      width: 205px;
+    }
+  }
+
+  @media only screen and (max-height: 540px) {
+    img {
+      width: 150px;
+    }
+  }
+`;
 const itemVariant = {
   hidden: { opacity: 0, y: 20 },
   visible: {
@@ -120,58 +112,6 @@ const itemVariant = {
 };
 
 // Styled-components
-const Container = styled.div`
-  display: grid;
-  width: 83%;
-  background-color: #202333;
-  border-top-right-radius: 1em;
-  border-bottom-right-radius: 1em;
-  @media only screen and (max-width: 720px) {
-    width: 100%;
-    border-radius: 1em;
-  }
-`;
-
-const Navbar = styled.div`
-  width: 75%;
-  display: none;
-
-  @media only screen and (max-width: 720px) {
-    display: flex;
-    padding: 1em;
-    justify-content: space-between;
-    svg{
-      cursor: pointer;
-      font-size: 30px;
-    }
-  }
-`;
-
-const Brand = styled.div`
-  display: grid;
-  min-width: max-content;
-  max-width: 150px;
-  grid-template-columns: auto auto;
-  font-size: large;
-
-  svg {
-    font-size: 30px;
-    margin: 5px;
-  }
-
-  i {
-    font-size: small;
-    font-weight: 300;
-    color: grey;
-  }
-`;
-
-const Name = styled.div`
-  display: flex;
-  font-weight: 400;
-  font-size: larger;
-  flex-direction: column;
-`;
 const TopBar = styled.div`
   text-align: center;
 `;
@@ -200,7 +140,8 @@ const MotionContents = styled(motion.div)`
   display: grid;
 
   svg {
-    cursor: pointer;
+    visibility: hidden;
+    font-size: 20px;
   }
 `;
 
