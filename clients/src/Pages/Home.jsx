@@ -15,21 +15,17 @@ export default function Home() {
     const {
         currentSongUrl,
         activeTab,
+        setActiveTab,
         audioRef,
         handleEnded,
         sidebar,
         setSidebar,
-        currentUser
+        currentUser,
+        setCurrentUser
     } = usePlayer();
     const navigate = useNavigate();
 
-useEffect(()=>{
-  if(!currentUser){
-    navigate('/auth')
-  }else{
-    navigate('/')
-  }
-},[navigate])
+
 
     return (
         <MainComponentWrapper>

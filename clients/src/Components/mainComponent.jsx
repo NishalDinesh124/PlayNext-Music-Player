@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import axios from 'axios';
 import { IoIosPlay, IoIosPause } from "react-icons/io";
@@ -6,6 +6,7 @@ import { CiHeart } from "react-icons/ci";
 import { addToLiked } from '../Utils/APIRoutes';
 import { toast } from 'react-toastify';
 import { usePlayer } from '../Contexts/PlayerContext';
+import { useNavigate } from 'react-router-dom';
 //import { motion } from 'framer-motion';
 
 
@@ -18,8 +19,26 @@ export default function MainComponent() {
     togglePlay,
     isPlaying,
     currentUser,
+    setCurrentUser,
     artist,
   } = usePlayer();
+const navigate = useNavigate();
+
+      useEffect(() => {
+    getCurrentUser()
+  }, []);
+      const getCurrentUser = async () => {
+    if (!localStorage.getItem('playnext-user')) {
+      navigate("/auth");
+    } else {
+      setCurrentUser(
+        await JSON.parse(
+          localStorage.getItem('playnext-user')
+        )
+      );
+      navigate('/')
+    }
+  }
 
   const handleAddToLiked = async (title, url, img, artist) => {
     try {

@@ -163,7 +163,8 @@ export const PlayerProvider = ({ children }) => {
                 setActiveTab,
                 sidebar,
                 setSidebar,
-                currentUser
+                currentUser,
+                setCurrentUser
             }}
         >
             {children}
