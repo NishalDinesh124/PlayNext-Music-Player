@@ -26,6 +26,8 @@ export default function Home() {
 useEffect(()=>{
   if(currentUser){
     navigate('/auth')
+  }else{
+    navigate('/')
   }
 },[navigate])
 
