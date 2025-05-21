@@ -18,10 +18,16 @@ export default function Home() {
         audioRef,
         handleEnded,
         sidebar,
-        setSidebar
+        setSidebar,
+        currentUser
     } = usePlayer();
     const navigate = useNavigate();
 
+useEffect(()=>{
+  if(currentUser){
+    navigate('/auth')
+  }
+},[])
 
     return (
         <MainComponentWrapper>
