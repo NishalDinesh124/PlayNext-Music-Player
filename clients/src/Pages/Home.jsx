@@ -27,7 +27,7 @@ useEffect(()=>{
   if(currentUser){
     navigate('/auth')
   }
-},[])
+},[navigate])
 
     return (
         <MainComponentWrapper>
