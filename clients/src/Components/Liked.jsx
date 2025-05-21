@@ -7,7 +7,8 @@ import { CiHeart } from "react-icons/ci";
 import { addToLiked } from '../Utils/APIRoutes';
 import { toast } from 'react-toastify';
 import { usePlayer } from '../Contexts/PlayerContext';
-import { motion } from 'framer-motion'; // Framer Motion
+import { motion } from 'framer-motion'; 
+import { RiMenuUnfold2Fill } from "react-icons/ri";
 
 export default function Liked() {
   const {
@@ -16,6 +17,8 @@ export default function Liked() {
     togglePlay,
     isPlaying,
     currentUser,
+    sidebar,
+    setSidebar
   } = usePlayer();
 
   const handleAddToLiked = async (title, url, img, artist) => {
@@ -47,6 +50,7 @@ export default function Liked() {
             PlayNext<i>Music Player</i>
           </Name>
         </Brand>
+        <RiMenuUnfold2Fill onClick={() => { setSidebar(!sidebar) }} />
       </Navbar>
 
       <TopBar><h2>Liked Songs</h2></TopBar>
@@ -129,10 +133,17 @@ const Container = styled.div`
 `;
 
 const Navbar = styled.div`
+  width: 75%;
   display: none;
+
   @media only screen and (max-width: 720px) {
     display: flex;
     padding: 1em;
+    justify-content: space-between;
+    svg{
+      cursor: pointer;
+      font-size: 30px;
+    }
   }
 `;
 
@@ -161,7 +172,6 @@ const Name = styled.div`
   font-size: larger;
   flex-direction: column;
 `;
-
 const TopBar = styled.div`
   text-align: center;
 `;

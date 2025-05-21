@@ -3,24 +3,22 @@ import styled from 'styled-components';
 import { PiPlayBold } from "react-icons/pi";
 import { usePlayer } from '../Contexts/PlayerContext';
 import { motion } from 'framer-motion';
+import { RiMenuUnfold2Fill } from "react-icons/ri";
 
 export default function Playlist() {
-    const { setActiveTab } = usePlayer();
+    const { setActiveTab,sidebar,setSidebar } = usePlayer();
 
     return (
-        <MotionContainer
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-        >
-            <Navbar>
-                <Brand>
-                    <PiPlayBold />
-                    <Name>
+        <MotionContainer>
+             <Navbar>
+                    <Brand>
+                      <PiPlayBold />
+                      <Name>
                         PlayNext<i>Music Player</i>
-                    </Name>
-                </Brand>
-            </Navbar>
+                      </Name>
+                    </Brand>
+                    <RiMenuUnfold2Fill onClick={()=>{setSidebar(!sidebar)}}/>
+                  </Navbar>
             <Main>
                 <Content onClick={() => { setActiveTab("liked") }}>
                     <ImgSection>
@@ -110,6 +108,11 @@ const Navbar = styled.div`
   @media only screen and (max-width: 720px) {
     display: flex;
     padding: 1em;
+    justify-content: space-between;
+    svg{
+      cursor: pointer;
+      font-size: 30px;
+    }
   }
 `;
 

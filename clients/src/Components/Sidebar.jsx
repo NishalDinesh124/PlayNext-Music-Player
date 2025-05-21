@@ -2,7 +2,42 @@ import React from 'react'
 import styled from 'styled-components'
 import { PiPlayBold } from "react-icons/pi";
 import { usePlayer } from '../Contexts/PlayerContext';
- const SideBarContainer = styled.div`
+import { motion } from 'framer-motion';
+ 
+export default function SideBar() {
+    const{
+        setActiveTab,
+        sidebar,
+        setSidebar
+    } = usePlayer();
+
+    ///handling sidebar clicks
+    const handleClick =()=>{
+        setActiveTab("playlist");
+    }
+    return (
+        <SideBarContainer  
+  initial={{ x: "0%", opacity: 0 }}
+        animate={sidebar ? { x: 0, opacity: 1 } : { x: "0%", opacity: 0 }}
+        transition={{
+          type: "spring",
+          stiffness: 200,
+          damping: 14
+  }}>
+            <Brand><PiPlayBold /><Name>
+                PlayNext<i>Music Player</i></Name>
+            </Brand>
+            <NavItem onClick={()=> setActiveTab("home")}>Home</NavItem>
+            <NavItem>Search</NavItem>
+            <NavItem>Library</NavItem>
+            <NavItem onClick={handleClick}>Playlists</NavItem>
+        </SideBarContainer>
+    )
+}
+
+// styled components
+
+const SideBarContainer = styled(motion.div)`
     display: flex;
     flex-direction: column;
     padding: 2em;
@@ -13,7 +48,10 @@ import { usePlayer } from '../Contexts/PlayerContext';
     border-bottom-left-radius:1em;
 
     @media only screen and (max-width: 720px) {
-        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 130px;
     }
     `;
     const NavItem = styled.div`
@@ -46,20 +84,3 @@ import { usePlayer } from '../Contexts/PlayerContext';
         font-size: larger;
         flex-direction: column;
     `
-
-export default function SideBar() {
-    const{
-        setActiveTab
-    } = usePlayer();
-    return (
-        <SideBarContainer>
-            <Brand><PiPlayBold /><Name>
-                PlayNext<i>Music Player</i></Name>
-            </Brand>
-            <NavItem onClick={()=> setActiveTab("home")}>Home</NavItem>
-            <NavItem>Search</NavItem>
-            <NavItem>Library</NavItem>
-            <NavItem onClick={()=> setActiveTab("playlist")}>Playlists</NavItem>
-        </SideBarContainer>
-    )
-}

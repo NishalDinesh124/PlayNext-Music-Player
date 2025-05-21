@@ -15,7 +15,7 @@ export default function Home() {
         currentSongUrl,
         activeTab,
         audioRef,
-        handleEnded
+        handleEnded,
     } = usePlayer();
     const navigate = useNavigate();
     const [currentUser, setCurrentUser] = useState([]);
@@ -46,7 +46,8 @@ export default function Home() {
                 onEnded={handleEnded}
             ></audio>
             <TopSection>
-                <SideBar currentUser={currentUser} />
+                <SideBar/>
+                
 
                 {activeTab === "home" ? (<MainComponent />) : 
                 activeTab === "liked" ? (<Liked />) : 

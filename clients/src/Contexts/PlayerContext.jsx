@@ -23,7 +23,7 @@ export const PlayerProvider = ({ children }) => {
     const [duration, setDuration] = useState(0);
    
     const [activeTab, setActiveTab] = useState("home") //setting home/playlist component accordingly
-
+    const [sidebar, setSidebar] = useState(true) //setting sidebar visibility
 
     ///Functions
     const handleEnded = () => {
@@ -131,7 +131,9 @@ export const PlayerProvider = ({ children }) => {
                 currentTime,
                 duration,
                 activeTab,
-                setActiveTab
+                setActiveTab,
+                sidebar,
+                setSidebar
             }}
         >
             {children}
