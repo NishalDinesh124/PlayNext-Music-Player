@@ -4,8 +4,6 @@ import SideBar from '../Components/Sidebar'
 import Footer from '../Components/Footer'
 import { motion } from 'framer-motion';
 import { usePlayer } from '../Contexts/PlayerContext';
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import Playlist from '../Components/Playlist';
 import Liked from '../Components/Liked';
 import { RiMenuUnfold2Fill } from "react-icons/ri";
@@ -15,18 +13,12 @@ export default function Home() {
     const {
         currentSongUrl,
         activeTab,
-        setActiveTab,
         audioRef,
         handleEnded,
         sidebar,
         setSidebar,
-        currentUser,
-        setCurrentUser
+  
     } = usePlayer();
-    const navigate = useNavigate();
-
-
-
     return (
         <MainComponentWrapper>
             <audio
@@ -82,6 +74,7 @@ const MotionContainer = styled(motion.div)`
   max-height: 100vh;
   display: grid;
   width: 83%;
+   gap: 1em;
   background-color: #202333;
   border-top-right-radius: 1em;
   border-bottom-right-radius: 1em;

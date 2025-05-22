@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import axios from 'axios';
 import { IoIosPlay, IoIosPause } from "react-icons/io";
@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import { usePlayer } from '../Contexts/PlayerContext';
 import { useNavigate } from 'react-router-dom';
 //import { motion } from 'framer-motion';
+import { IoIosSearch } from "react-icons/io";
 
 
 export default function MainComponent() {
@@ -22,23 +23,30 @@ export default function MainComponent() {
     setCurrentUser,
     artist,
   } = usePlayer();
-const navigate = useNavigate();
+  const navigate = useNavigate();
+  const [search, setSearch] = useState(""); // search states
 
-      useEffect(() => {
+  const filteredSongs = apiSongs.filter((song) =>
+    song.trackCensoredName.toLowerCase().includes(search.toLowerCase()) ||
+    song.artistName.toLowerCase().includes(search.toLowerCase())
+  );
+
+  // getting user from local storage
+  useEffect(() => {
+    const getCurrentUser = async () => {
+      if (!localStorage.getItem('playnext-user')) {
+        navigate("/auth");
+      } else {
+        setCurrentUser(
+          await JSON.parse(
+            localStorage.getItem('playnext-user')
+          )
+        );
+      }
+    }
     getCurrentUser()
   }, []);
-      const getCurrentUser = async () => {
-    if (!localStorage.getItem('playnext-user')) {
-      navigate("/auth");
-    } else {
-      setCurrentUser(
-        await JSON.parse(
-          localStorage.getItem('playnext-user')
-        )
-      );
-      navigate('/')
-    }
-  }
+
 
   const handleAddToLiked = async (title, url, img, artist) => {
     try {
@@ -61,19 +69,19 @@ const navigate = useNavigate();
   };
 
   return (
-    
-<>
+
+    <>
       <TitleSection>
         {isPlaying ? (
           <Section><ImgSection>
-              <img src={currentSongImg} alt="Album Cover" />
-            </ImgSection>
+            <img src={currentSongImg} alt="Album Cover" />
+          </ImgSection>
             <InfoSection>
               <h2>{currentSongTitle}</h2>
               <span>{artist}</span>
             </InfoSection>
           </Section>
-            
+
         ) : (
           <Welcome>
             <img src="/listen.svg" alt='Welcome' />
@@ -81,22 +89,45 @@ const navigate = useNavigate();
           </Welcome>
         )}
       </TitleSection>
+      <SearchPanel> <input
+        type="text"
+        placeholder="Search by title or artist"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className="p-2 rounded-md border w-full max-w-md"
+      />
+      <span style={{
+    position: 'absolute',
+    left: '10px',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    pointerEvents: 'none',
+    color: '#888'
+  }}><IoIosSearch /></span></SearchPanel>
+     
 
       <MusicSection>
-        {apiSongs.map((song, index) => (
-          <Contents key={index} delay={index * 0.1}>
-            <Song>
-              <span onClick={() => togglePlay(song.previewUrl, song.trackCensoredName, song.artworkUrl100, song.artistName)}>
-                {isPlaying && currentSongUrl === song.previewUrl ? <IoIosPause /> : <IoIosPlay />}
-              </span>
-              <span>{song.trackCensoredName}</span>
-            </Song>
-            <CiHeart onClick={() => handleAddToLiked(song.trackCensoredName, song.previewUrl, song.artworkUrl100, song.artistName)} />
-            <Time>0:30</Time>
-          </Contents>
-        ))}
+      
+  {filteredSongs.length > 0 ? (
+    filteredSongs.map((song, index) => (
+      <Contents key={index} delay={index * 0.1}>
+        <Song>
+          <span onClick={() => togglePlay(song.previewUrl, song.trackCensoredName, song.artworkUrl100, song.artistName)}>
+            {isPlaying && currentSongUrl === song.previewUrl ? <IoIosPause /> : <IoIosPlay />}
+          </span>
+          <span>{song.trackCensoredName}</span>
+        </Song>
+        <CiHeart onClick={() => handleAddToLiked(song.trackCensoredName, song.previewUrl, song.artworkUrl100, song.artistName)} />
+        <Time>0:30</Time>
+      </Contents>
+    ))
+  ) : (
+    <div style={{ height: '260px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#aaa' }}>
+      No results found
+    </div>
+  )}
       </MusicSection>
-</>
+    </>
   );
 }
 
@@ -122,18 +153,18 @@ const Welcome = styled.div`
   flex-direction: column;
 
   img {
-    width: 400px;
+    width: 222px;
   }
 
   @media only screen and (max-width: 720px) {
     img {
-      width: 205px;
+      width: 170px;
     }
   }
 
   @media (min-height: 540px) and (max-height: 800px) {
     img {
-      width: 205px;
+      width: 136px;
     }
   }
 
@@ -143,6 +174,8 @@ const Welcome = styled.div`
     }
   }
 `;
+
+ 
 const TitleSection = styled.div`
   display: flex;
   padding: 4vw;
@@ -153,15 +186,40 @@ const TitleSection = styled.div`
     flex-direction: column;
     gap: 0px;
   }
+ 
 `;
+const SearchPanel = styled.div`
+display: flex;
+position: relative;
+  input{
+    border-radius: 2em;
+    background: #bbafaf14;
+    border: solid 1px #ffff;
+    text-align: center;
+     padding-left: 40pxl;
+    width: 100%;
+    font-size: 17px;
+    height: 30px;
+    font-family: 'Inter'
+  }
+  
+`
 
 const Section = styled.div`
+   @media (min-height: 540px) and (max-height: 800px) {
+   flex-direction: row;
+  }
 
+  @media only screen and (max-height: 540px) {
+    img {
+      width: 80px;
+    }
+  }
 `
 
 const ImgSection = styled.div`
-  width: 220px;
-  height: 220px;
+  width: 175px;
+  height: 175px;
   border-radius: 1em;
   overflow: hidden;
   display: flex;
@@ -192,16 +250,28 @@ const ImgSection = styled.div`
     width: 160px;
     height: 160px;
   }
+    @media (min-height: 540px) and (max-height: 800px) {
+    img {
+      width: 80px;
+    }
+  }
+
+  @media only screen and (max-height: 540px) {
+    img {
+      width: 80px;
+    }
+  }
 `;
 
 const InfoSection = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  
 `;
 
 const MusicSection = styled.div`
-  max-height: 80%;
+
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -222,6 +292,7 @@ const Contents = styled.div`
   border-radius: 1em;
   width: 83%;
   padding: 12px;
+ 
   grid-template-columns: 78% 10% 12%;
   display: grid;
   svg {

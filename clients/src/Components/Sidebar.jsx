@@ -22,6 +22,9 @@ export default function SideBar() {
           type: "spring",
           stiffness: 200,
           damping: 14
+  }}
+    style={{
+    pointerEvents: sidebar ? "auto" : "none"
   }}>
             <Brand><PiPlayBold /><Name>
                 PlayNext<i>Music Player</i></Name>
@@ -51,6 +54,7 @@ const SideBarContainer = styled(motion.div)`
         top: 0;
         left: 0;
         width: 130px;
+         border-bottom-left-radius:0em;
     }
     `;
     const NavItem = styled.div`

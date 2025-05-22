@@ -32,7 +32,6 @@ module.exports.addToLiked = async (req, res, next) => {
 module.exports.getLikedSongs = async (req, res, next) => {
     try {
         const { userId } = req.body
-        console.log(userId.toString());
         const songs = await LikedSongs.find({ user: userId.toString() });
         if (songs) {
             res.json(songs)
@@ -42,6 +41,5 @@ module.exports.getLikedSongs = async (req, res, next) => {
     } catch (err) {
         console.error("Error happened:", err);  // <-- this will show the actual error
     res.status(500).json({ error: 'Failed to fetch from Deezer' });
-
     }
 }

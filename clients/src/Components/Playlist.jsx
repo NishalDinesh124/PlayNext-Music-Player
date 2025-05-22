@@ -2,12 +2,14 @@ import React from 'react'
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { usePlayer } from '../Contexts/PlayerContext';
-
 const imageList = [
-  '/happy.svg',
-
+  { src: '/happy.svg', title: 'Liked Songs' },
+  { src: '/happy1.svg', title: 'Workout Vibes' },
+  { src: '/happy2.svg', title: 'Chill Beats' },
+  { src: '/happy3.svg', title: 'Top Hits' },
+  { src: '/happy4.svg', title: 'Focus Flow' },
+  { src: '/happy5.svg', title: 'Party Mix' },
 ];
-
 // Animation variants
 const contentVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -27,7 +29,7 @@ export default function Playlist() {
 
   return (
     <Main>
-      {imageList.map((src, index) => (
+      {imageList.map(({src,title},index) => (
         <MotionContent
           key={index}
           custom={index}
@@ -39,7 +41,7 @@ export default function Playlist() {
           <ImgSection>
             <img src={src} alt={`Album Cover ${index + 1}`} />
           </ImgSection>
-          <h3>Liked Songs</h3>
+          <h3>{title}</h3>
         </MotionContent>
       ))}
     </Main>

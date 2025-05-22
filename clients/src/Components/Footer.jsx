@@ -1,5 +1,5 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, {keyframes} from 'styled-components'
 import { AiTwotonePlayCircle, AiTwotonePauseCircle } from "react-icons/ai";
 import { MdSkipNext, MdSkipPrevious } from "react-icons/md";
 //import { CiHeart } from "react-icons/ci";
@@ -31,7 +31,9 @@ const{
         <ImgSection>
           <img src={currentSongImg} alt="" />
         </ImgSection>
-         <p>{currentSongTitle}</p>
+         <SongTitleContainer>
+  <ScrollingText>{currentSongTitle}</ScrollingText>
+</SongTitleContainer>
       </IconSection>
       
       <Controllers>
@@ -68,20 +70,45 @@ const{
 
 ///styling///
 const ControlSection = styled.div`
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-        background-color: #171927;
-        display: grid;
-        grid-template-columns: 40% 60%;
-        width: 100%;
-        border-top: solid 1px #2e2f4b;
-        border-bottom-left-radius: 1em;
-        border-bottom-right-radius: 1em;
-        flex-direction: row;
-        align-items: center;
-    `
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #171927;
+  display: grid;
+   grid-template-columns: 56% 44%;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1em;
+  height: 115px;  // Fixed height
+  border-top: solid 1px #2e2f4b;
+  border-bottom-left-radius: 1em;
+  border-bottom-right-radius: 1em;
+`;
+
+const scrollText = keyframes`
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+`;
+
+const SongTitleContainer = styled.div`
+      min-width: 100px;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+`;
+
+const ScrollingText = styled.div`
+  display: inline-block;
+  
+  color: white;
+  font-size: 1rem;
+  white-space: nowrap;
+   @media only screen and (max-width: 720px) {
+    padding-left: 100%; 
+   animation: ${scrollText} 10s linear infinite; 
+  }
+`;
 
 const IconSection = styled.div`
     padding: 3vh;
