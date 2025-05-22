@@ -89,6 +89,7 @@ const TopSection = styled.div`
 display: flex;
 flex-direction: row;
 justify-content: space-around;
+overflow: hidden;
 width: 90vw;
 `
 const Navbar = styled.div`

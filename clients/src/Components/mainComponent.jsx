@@ -45,7 +45,7 @@ export default function MainComponent() {
       }
     }
     getCurrentUser()
-  }, []);
+  }, [navigate]);
 
 
   const handleAddToLiked = async (title, url, img, artist) => {
@@ -70,7 +70,7 @@ export default function MainComponent() {
 
   return (
 
-    <>
+    <Container>
       <TitleSection>
         {isPlaying ? (
           <Section><ImgSection>
@@ -89,22 +89,16 @@ export default function MainComponent() {
           </Welcome>
         )}
       </TitleSection>
-      <SearchPanel> <input
-        type="text"
-        placeholder="Search by title or artist"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="p-2 rounded-md border w-full max-w-md"
-      />
-      <span style={{
-    position: 'absolute',
-    left: '10px',
-    top: '50%',
-    transform: 'translateY(-50%)',
-    pointerEvents: 'none',
-    color: '#888'
-  }}><IoIosSearch /></span></SearchPanel>
-     
+    <SearchPanel>
+  <SearchInput
+    type="text"
+    placeholder="Search by title or artist"
+    value={search}
+    onChange={(e) => setSearch(e.target.value)}
+  />
+  <SearchIcon><IoIosSearch /></SearchIcon>
+</SearchPanel>
+
 
       <MusicSection>
       
@@ -127,7 +121,7 @@ export default function MainComponent() {
     </div>
   )}
       </MusicSection>
-    </>
+    </Container>
   );
 }
 
@@ -144,6 +138,14 @@ const fadeInUp = keyframes`
 `;
 
 // Styled-components
+const Container =styled.div`
+   display: flex;
+  flex-direction: column;
+  height: 85vh;
+  padding: 2em;
+  box-sizing: border-box;
+  gap: 1.5em;
+`
 const Welcome = styled.div`
   display: flex;
   width: 100%;
@@ -189,23 +191,52 @@ const TitleSection = styled.div`
  
 `;
 const SearchPanel = styled.div`
-display: flex;
-position: relative;
-  input{
-    border-radius: 2em;
-    background: #bbafaf14;
-    border: solid 1px #ffff;
-    text-align: center;
-     padding-left: 40pxl;
-    width: 100%;
-    font-size: 17px;
-    height: 30px;
-    font-family: 'Inter'
+  position: relative;
+  width: 88%;
+  max-width: 400px;
+`;
+
+const SearchInput = styled.input`
+  width: 100%;
+  min-width: 237px;
+  border-radius: 2em;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid #ffffff;
+  padding-left: 40px;
+  font-size: 17px;
+  height: 36px;
+  font-family: 'Inter', sans-serif;
+  color: white;
+  text-align: left;
+
+  &:focus {
+    outline: none;
+    border: 1px solid rgb(123, 77, 247);
+    box-shadow: 0 0 0 2px rgba(122, 169, 255, 0.3);
   }
-  
-`
+
+  &::placeholder {
+    color: #bbb;
+  }
+`;
+
+const SearchIcon = styled.span`
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #ccc;
+  font-size: 18px;
+`;
+
 
 const Section = styled.div`
+ display: flex;
+  align-items: center;
+  gap: 1em;
+  width: 100%;
+  overflow: hidden;
    @media (min-height: 540px) and (max-height: 800px) {
    flex-direction: row;
   }
@@ -215,11 +246,15 @@ const Section = styled.div`
       width: 80px;
     }
   }
+  @media only screen and (max-width: 540px) {
+   flex-direction: column;
+  }
 `
 
 const ImgSection = styled.div`
-  width: 175px;
-  height: 175px;
+ flex-shrink: 0;
+  width: 200px;
+  height: 200px;
   border-radius: 1em;
   overflow: hidden;
   display: flex;
@@ -272,11 +307,12 @@ const InfoSection = styled.div`
 
 const MusicSection = styled.div`
 
+   flex: 1;
+  overflow-y: auto;
+  padding-right: 8px;
   display: flex;
   flex-direction: column;
-  width: 100%;
   align-items: center;
-  overflow: auto;
   gap: 1em;
 
   :hover {

@@ -1,20 +1,43 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { IoIosPlay, IoIosPause } from "react-icons/io";
-import { CiHeart } from "react-icons/ci";
+import { FaHeart } from "react-icons/fa";
 import { usePlayer } from '../Contexts/PlayerContext';
 import { motion } from 'framer-motion'; 
+import axios from 'axios';
+import { getLikedSongs } from '../Utils/APIRoutes';
+
 export default function Liked() {
   const {
-    likedSongs,
     currentSongUrl,
     togglePlay,
     isPlaying,
   } = usePlayer();
+const [likedSongs, setLikedSongs] = useState([]);
+  useEffect(()=>{
+    const handleGetLikedSongs =async ()=>{
+        try{
+ const user =await JSON.parse(localStorage.getItem('playnext-user'));
+         console.log(user._id);
+        const response = await axios.post(getLikedSongs,{
+            userId : user._id
+        })
+        console.log(response.data);
+        
+        setLikedSongs(response.data)
+        }catch(err){
+            console.log("An error occured");
+            
+        }
+         
+    }
+    handleGetLikedSongs();
+  },[likedSongs])
 
 
   return (
-    <><TopBar><h2>Liked Songs</h2></TopBar>
+    
+    <LikedContainer><TopBar><h2>Liked Songs</h2></TopBar>
 
 
 {likedSongs.length >0 ?<MotionMusicSection
@@ -44,7 +67,7 @@ export default function Liked() {
               <span>{song.title}</span>
             </Song>
 
-            <CiHeart/>
+            <FaHeart />
 
             <Time>0:30</Time>
           </MotionContents>
@@ -53,7 +76,7 @@ export default function Liked() {
             <img src="/listen.svg" alt='Welcome' />
             <h2>No songs in this list</h2>
           </Welcome>}
-      </>
+      </LikedContainer>
      
 
       
@@ -71,6 +94,13 @@ const listVariant = {
     },
   },
 };
+
+const LikedContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100vh;
+`
 const Welcome = styled.div`
   display: flex;
   margin-bottom: 28em;
@@ -127,6 +157,7 @@ const MotionMusicSection = styled(motion.div)`
       background-color: #2d3145;
       svg {
         visibility: visible;
+        
       }
     } 
 `;
@@ -141,6 +172,8 @@ const MotionContents = styled(motion.div)`
   svg {
     visibility: hidden;
     font-size: 20px;
+    color: rgb(123, 77, 247);
+   
   }
 `;
 
@@ -153,6 +186,8 @@ const Song = styled.div`
   svg {
     visibility: hidden;
     cursor: pointer;
+    color: #ffff;
+     
   }
 `;
 

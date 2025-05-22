@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useRef, useEffect } from "react";
 import axios from "axios";
-import { getSongsRoute , getLikedSongs} from "../Utils/APIRoutes";
+import { getSongsRoute} from "../Utils/APIRoutes";
 
 
 
@@ -20,7 +20,6 @@ export const PlayerProvider = ({ children }) => {
     const [artist, setArtist] = useState();
     const [currentTime, setCurrentTime] = useState(0);
     const [apiSongs, setApiSongs] = useState([]);
-    const [likedSongs, setLikedSongs] = useState([]);
     const [duration, setDuration] = useState(0);
     const [currentUser, setCurrentUser] = useState([]);
 
@@ -107,7 +106,6 @@ export const PlayerProvider = ({ children }) => {
     useEffect(() => {
         getCurrentUser();// getting user from local storage
         getApiSongs(); //getting songs from backend
-        handleGetLikedSongs(); // getting liked songs by user
     }, [])
 
     const getCurrentUser = async () => {
@@ -126,28 +124,12 @@ export const PlayerProvider = ({ children }) => {
             });
     }
 
-    const handleGetLikedSongs =async ()=>{
-        try{
- const user =await JSON.parse(localStorage.getItem('playnext-user'));
-         console.log(user._id);
-        const response = await axios.post(getLikedSongs,{
-            userId : user._id
-        })
-        console.log(response.data);
-        
-        setLikedSongs(response.data)
-        }catch(err){
-            console.log("An error occured");
-            
-        }
-         
-    }
+
     return (
         <PlayerContext.Provider
             value={{
                 togglePlay,
                 apiSongs,
-                likedSongs,
                 isPlaying,
                 handleEnded,
                 audioRef,
