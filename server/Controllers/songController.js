@@ -25,7 +25,8 @@ module.exports.addToLiked = async (req, res, next) => {
         });
         return res.json({ status: true })
     } catch (err) {
-        next(err)
+         console.error("Error happened:", err);  
+    res.status(500).json({ error: 'Failed to add to liked songs' });
     }
 }
 
@@ -39,7 +40,18 @@ module.exports.getLikedSongs = async (req, res, next) => {
             return res.json({ status: false })
         }
     } catch (err) {
-        console.error("Error happened:", err);  // <-- this will show the actual error
-    res.status(500).json({ error: 'Failed to fetch from Deezer' });
+        console.error("Error happened:", err);  
+    res.status(500).json({ error: 'Failed to get liked songs' });
+    }
+}
+
+module.exports.dislike = async (req, res, next) => {
+    try {
+        const {url} = req.body;
+        await LikedSongs.deleteOne({url: url})
+        return res.json({ status: true })
+    } catch (err) {
+        console.error("Error happened:", err);  
+    res.status(500).json({ error: 'Failed to remove from liked songs' });
     }
 }

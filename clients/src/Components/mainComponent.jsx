@@ -1,19 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import axios from 'axios';
 import { IoIosPlay, IoIosPause } from "react-icons/io";
-import { CiHeart } from "react-icons/ci";
-import { addToLiked } from '../Utils/APIRoutes';
+import { FaRegHeart } from "react-icons/fa";
+import { addToLiked, dislikeRoute } from '../Utils/APIRoutes';
 import { toast } from 'react-toastify';
 import { usePlayer } from '../Contexts/PlayerContext';
 import { useNavigate } from 'react-router-dom';
 //import { motion } from 'framer-motion';
 import { IoIosSearch } from "react-icons/io";
+import { FaHeart } from "react-icons/fa";
 
 
 export default function MainComponent() {
   const {
-    apiSongs,
+    filteredSongs,
     currentSongImg,
     currentSongTitle,
     currentSongUrl,
@@ -22,17 +23,15 @@ export default function MainComponent() {
     currentUser,
     setCurrentUser,
     artist,
+    search,
+    setSearch,
+    setFilteredSongs,
   } = usePlayer();
   const navigate = useNavigate();
-  const [search, setSearch] = useState(""); // search states
-
-  const filteredSongs = apiSongs.filter((song) =>
-    song.trackCensoredName.toLowerCase().includes(search.toLowerCase()) ||
-    song.artistName.toLowerCase().includes(search.toLowerCase())
-  );
 
   // getting user from local storage
   useEffect(() => {
+    console.log("Error adding song");
     const getCurrentUser = async () => {
       if (!localStorage.getItem('playnext-user')) {
         navigate("/auth");
@@ -48,7 +47,16 @@ export default function MainComponent() {
   }, [navigate]);
 
 
-  const handleAddToLiked = async (title, url, img, artist) => {
+  const handleAddToLiked = async (title, url, img, artist) => { // handle adding to liked songs
+    console.log("Liked functioning");
+
+    // update local state of all songs for quick  liked button effect
+    setFilteredSongs(prevSongs =>
+      prevSongs.map(song =>
+        song.id === url ? { ...song, isLiked: true } : song
+      )
+    )
+
     try {
       const res = await axios.post(addToLiked, {
         title,
@@ -65,61 +73,83 @@ export default function MainComponent() {
       }
     } catch (err) {
       console.log("Error adding song");
+      toast.error("Error adding song to playlist")
     }
   };
 
+  // handling disliking feature
+  const handleSongDislike =async(url)=>{ 
+     // update local state of all songs for quick  liked button effect
+    setFilteredSongs(prevSongs =>
+      prevSongs.map(song =>
+        song.id === url ? { ...song, isLiked: false } : song
+      )
+    )
+try{
+  const res = await axios.post(dislikeRoute,{
+        url,
+  })
+  if(res.data.status === true){
+    toast.success("Song removed from playlist")
+    
+  }else{
+    toast.error("An error removing song from playlist")
+  }
+
+}catch(err){
+  toast.error("An error in removing song from playlist")
+}
+  }
   return (
 
     <Container>
       <TitleSection>
-        {isPlaying ? (
-          <Section><ImgSection>
+        {isPlaying? <Section><ImgSection>
             <img src={currentSongImg} alt="Album Cover" />
           </ImgSection>
             <InfoSection>
               <h2>{currentSongTitle}</h2>
               <span>{artist}</span>
             </InfoSection>
-          </Section>
-
-        ) : (
-          <Welcome>
-            <img src="/listen.svg" alt='Welcome' />
-            <h2>No song is playing</h2>
-          </Welcome>
-        )}
+          </Section> : <Welcome><img src="/listen.svg" alt='Welcome' />
+            <h2>No song is playing</h2></Welcome>}
+        
+        
       </TitleSection>
-    <SearchPanel>
-  <SearchInput
-    type="text"
-    placeholder="Search by title or artist"
-    value={search}
-    onChange={(e) => setSearch(e.target.value)}
-  />
-  <SearchIcon><IoIosSearch /></SearchIcon>
-</SearchPanel>
+      <SearchPanel>
+        <SearchInput
+          type="text"
+          placeholder="Search by title or artist"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <SearchIcon><IoIosSearch /></SearchIcon>
+      </SearchPanel>
 
 
       <MusicSection>
-      
-  {filteredSongs.length > 0 ? (
-    filteredSongs.map((song, index) => (
-      <Contents key={index} delay={index * 0.1}>
-        <Song>
-          <span onClick={() => togglePlay(song.previewUrl, song.trackCensoredName, song.artworkUrl100, song.artistName)}>
-            {isPlaying && currentSongUrl === song.previewUrl ? <IoIosPause /> : <IoIosPlay />}
-          </span>
-          <span>{song.trackCensoredName}</span>
-        </Song>
-        <CiHeart onClick={() => handleAddToLiked(song.trackCensoredName, song.previewUrl, song.artworkUrl100, song.artistName)} />
-        <Time>0:30</Time>
-      </Contents>
-    ))
-  ) : (
-    <div style={{ height: '260px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#aaa' }}>
-      No results found
-    </div>
-  )}
+
+        {filteredSongs.length > 0 ? (
+          filteredSongs.map((song, index) => (
+            <Contents key={index} delay={index * 0.1}>
+              <Song>
+                <span onClick={() => togglePlay(song.audioUrl, song.title, song.img, song.artist,index)}>
+                  {isPlaying && currentSongUrl === song.audioUrl ? <IoIosPause /> : <IoIosPlay />}
+                </span>
+                <span>{song.title}</span>
+              </Song>
+              {song.isLiked ? <FaHeart style={{ color: "rgb(123, 77, 247)", fontSize: '16px' }} onClick={() => { handleSongDislike(song.audioUrl) }} />
+                :
+                <FaRegHeart onClick={() => handleAddToLiked(song.title, song.audioUrl, song.img, song.artist)} />}
+
+              <Time>0:30</Time>
+            </Contents>
+          ))
+        ) : (
+          <div style={{ height: '260px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#aaa' }}>
+            No results found
+          </div>
+        )}
       </MusicSection>
     </Container>
   );
@@ -138,18 +168,20 @@ const fadeInUp = keyframes`
 `;
 
 // Styled-components
-const Container =styled.div`
+const Container = styled.div`
    display: flex;
   flex-direction: column;
   height: 85vh;
   padding: 2em;
   box-sizing: border-box;
   gap: 1.5em;
+  width: 100%;
+    align-items: center;
 `
 const Welcome = styled.div`
   display: flex;
   width: 100%;
-  height: 100%;
+  gap: 1em;
   align-items: center;
   justify-content: center;
   flex-direction: column;
@@ -177,10 +209,9 @@ const Welcome = styled.div`
   }
 `;
 
- 
+
 const TitleSection = styled.div`
   display: flex;
-  padding: 4vw;
   align-items: center;
   gap: 20px;
 
@@ -282,16 +313,20 @@ const ImgSection = styled.div`
   }
 
   @media only screen and (max-width: 720px) {
-    width: 160px;
-    height: 160px;
+    width: 116px;
+        height: 115px;
   }
     @media (min-height: 540px) and (max-height: 800px) {
+      width: 100px;
+    height: 100px;
     img {
       width: 80px;
     }
   }
 
   @media only screen and (max-height: 540px) {
+    width: 100px;
+    height: 100px;
     img {
       width: 80px;
     }
@@ -333,7 +368,7 @@ const Contents = styled.div`
   display: grid;
   svg {
     visibility:hidden;
-    font-size: 20px;
+    font-size: 16px;
   }
 
   opacity: 0;

@@ -1,39 +1,46 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect} from 'react';
 import styled from 'styled-components';
 import { IoIosPlay, IoIosPause } from "react-icons/io";
 import { FaHeart } from "react-icons/fa";
 import { usePlayer } from '../Contexts/PlayerContext';
 import { motion } from 'framer-motion'; 
+import { dislikeRoute } from '../Utils/APIRoutes';
 import axios from 'axios';
-import { getLikedSongs } from '../Utils/APIRoutes';
+import { toast } from 'react-toastify';
 
 export default function Liked() {
   const {
     currentSongUrl,
     togglePlay,
     isPlaying,
+    likedSongs,
+    handleGetLikedSongs,
   } = usePlayer();
-const [likedSongs, setLikedSongs] = useState([]);
-  useEffect(()=>{
-    const handleGetLikedSongs =async ()=>{
-        try{
- const user =await JSON.parse(localStorage.getItem('playnext-user'));
-         console.log(user._id);
-        const response = await axios.post(getLikedSongs,{
-            userId : user._id
-        })
-        console.log(response.data);
-        
-        setLikedSongs(response.data)
-        }catch(err){
-            console.log("An error occured");
-            
-        }
-         
-    }
-    handleGetLikedSongs();
-  },[likedSongs])
 
+  useEffect(()=>{
+    console.log("Error adding song");
+    handleGetLikedSongs();
+  },[])
+
+
+   // handling disliking feature
+    const handleSongDislike =async(url)=>{ // may be moving this function to PlayerContext will be good for future updates
+  try{
+    const res = await axios.post(dislikeRoute,{   
+          url,
+    })
+    if(res.data.status === true){
+      toast.success("Song removed from playlist")
+      handleGetLikedSongs();
+      
+    }else{
+      toast.error("An error removing song from playlist")
+    }
+  
+  }catch(err){
+    toast.error("An error in removing song from playlist")
+  }
+    }
 
   return (
     
@@ -57,7 +64,8 @@ const [likedSongs, setLikedSongs] = useState([]);
                   song.url,
                   song.title,
                   song.img,
-                  song.artist
+                  song.artist,
+                  index
                 )
               }>
                 {isPlaying && currentSongUrl === song.url
@@ -67,7 +75,7 @@ const [likedSongs, setLikedSongs] = useState([]);
               <span>{song.title}</span>
             </Song>
 
-            <FaHeart />
+            <FaHeart onClick={() => { handleSongDislike(song.url) }}/>
 
             <Time>0:30</Time>
           </MotionContents>
@@ -171,7 +179,7 @@ const MotionContents = styled(motion.div)`
 
   svg {
     visibility: hidden;
-    font-size: 20px;
+    font-size: 16px;
     color: rgb(123, 77, 247);
    
   }

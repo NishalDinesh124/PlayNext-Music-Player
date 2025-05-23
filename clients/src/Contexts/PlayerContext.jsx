@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useRef, useEffect } from "react";
 import axios from "axios";
-import { getSongsRoute} from "../Utils/APIRoutes";
+import { getLikedSongs, getSongsRoute } from "../Utils/APIRoutes";
 
 
 
@@ -22,20 +22,25 @@ export const PlayerProvider = ({ children }) => {
     const [apiSongs, setApiSongs] = useState([]);
     const [duration, setDuration] = useState(0);
     const [currentUser, setCurrentUser] = useState([]);
-
+    const [likedSongs, setLikedSongs] = useState([]);
+    const [search, setSearch] = useState(""); // search states
     const [activeTab, setActiveTab] = useState("home") //setting home/playlist component accordingly
     const [sidebar, setSidebar] = useState(true) //setting sidebar visibility
+    const [filteredSongs, setFilteredSongs] = useState([]);// filtredsongs with liked and api songs
+    const [currentIndex, setCurrentIndex] = useState(null); // current playing song index
 
     ///Functions
     const handleEnded = () => {
-        setIsPlaying(false);
+        handleNext();
     };
 
     // Play/pause Control
-    const togglePlay = async (songUrl, songTitle, songImg, artist) => {
+    const togglePlay = async (songUrl, songTitle, songImg, artist, index = null) => {
         const audio = audioRef.current;
         if (!audio) return;
-
+        if (index !== null) {
+            setCurrentIndex(index); // Set index when playing from list
+        }
         if (currentSongUrl === songUrl) {
             console.log("First if");
 
@@ -56,7 +61,6 @@ export const PlayerProvider = ({ children }) => {
                 setIsPlaying(true);
                 audio.play().catch((err) => console.error("Play error:", err));
             }
-            setIsPlaying(!isPlaying)
         } else {
             console.log("Third if");
             setCurrentSongUrl(songUrl);
@@ -74,6 +78,23 @@ export const PlayerProvider = ({ children }) => {
             }, 100);
         }
     };
+    // handle next/previous
+    const handleNext = () => {
+        if (filteredSongs.length === 0 || currentIndex === null) return;
+        const nextIndex = (currentIndex + 1) % filteredSongs.length;
+        const nextSong = filteredSongs[nextIndex];
+        setCurrentIndex(nextIndex);
+        togglePlay(nextSong.audioUrl, nextSong.title, nextSong.img, nextSong.artist, nextIndex);
+    };
+
+    const handlePrevious = () => {
+        if (filteredSongs.length === 0 || currentIndex === null) return;
+        const prevIndex = (currentIndex - 1 + filteredSongs.length) % filteredSongs.length;
+        const prevSong = filteredSongs[prevIndex];
+        setCurrentIndex(prevIndex);
+        togglePlay(prevSong.audioUrl, prevSong.title, prevSong.img, prevSong.artist, prevIndex);
+    };
+
 
     //Seek on progress bar click
     const handleSeek = (percent) => {
@@ -104,32 +125,97 @@ export const PlayerProvider = ({ children }) => {
 
 
     useEffect(() => {
+        console.log("Error adding song");
         getCurrentUser();// getting user from local storage
         getApiSongs(); //getting songs from backend
+        handleGetLikedSongs(); // getting liked songs from database
     }, [])
 
+    //==== FUNCTIONS ====//
     const getCurrentUser = async () => {
-         const user =await JSON.parse(localStorage.getItem('playnext-user'));
+        const user = await JSON.parse(localStorage.getItem('playnext-user'));
         setCurrentUser(user)
     }
 
+    /// getting songs from api 
     const getApiSongs = () => {
-        axios.get(getSongsRoute)
-            .then(response => {
-                console.log(response.data.results);
-                setApiSongs(response.data.results);
-            })
-            .catch(error => {
-                console.error('Axios Error:', error);
-            });
+        try {
+            axios.get(getSongsRoute)
+                .then(response => {
+                    console.log(response.data.results);
+                    setApiSongs(response.data.results);
+                })
+                .catch(error => {
+                    console.error('Axios Error:', error);
+                });
+        } catch (err) {
+            console.log("An error occured", err);
+        }
+
     }
+    const handleGetLikedSongs = async () => {  /// getting liked songs
+        try {
+            console.log("Liked songs fetching");
+
+            const user = await JSON.parse(localStorage.getItem('playnext-user'));
+            console.log(user._id);
+            const response = await axios.post(getLikedSongs, {
+                userId: user._id
+            })
+            console.log(response.data);
+
+            setLikedSongs(response.data)
+        } catch (err) {
+            console.log("An error occured", err);
+
+        }
+
+    }
+
+    // ==== Categorising liked and unliked songs from API ====//
+    useEffect(() => {
+        console.log("Error adding song");
+        const allSongsMap = new Map();
+
+        apiSongs.forEach(song => {
+            allSongsMap.set(song.previewUrl, {
+                id: song.previewUrl,
+                title: song.trackCensoredName,
+                artist: song.artistName,
+                audioUrl: song.previewUrl,
+                img: song.artworkUrl100,
+                type: 'api',
+                isLiked: false
+            });
+        });
+
+        likedSongs.forEach(song => {
+            allSongsMap.set(song.url, {
+                id: song.url,
+                title: song.title,
+                artist: song.artist,
+                audioUrl: song.url,
+                img: song.img,
+                type: 'liked',
+                isLiked: true
+            });
+        });
+
+        const allSongsCombined = Array.from(allSongsMap.values());
+        const filterdSearchSongs = allSongsCombined.filter((song) => /// filtering for search
+            song.title.toLowerCase().includes(search.toLowerCase()) ||
+            song.artist.toLowerCase().includes(search.toLowerCase())
+        );
+        setFilteredSongs(filterdSearchSongs);
+    }, [apiSongs, likedSongs, search]); // Only runs when these change
+
+
 
 
     return (
         <PlayerContext.Provider
             value={{
                 togglePlay,
-                apiSongs,
                 isPlaying,
                 handleEnded,
                 audioRef,
@@ -146,7 +232,18 @@ export const PlayerProvider = ({ children }) => {
                 sidebar,
                 setSidebar,
                 currentUser,
-                setCurrentUser
+                setCurrentUser,
+                likedSongs,
+                setLikedSongs,
+                handleGetLikedSongs,
+                filteredSongs,
+                setFilteredSongs,
+                search,
+                setSearch,
+                handleNext,
+                handlePrevious,
+                currentIndex,
+                setCurrentIndex,
             }}
         >
             {children}

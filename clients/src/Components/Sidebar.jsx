@@ -54,7 +54,7 @@ const SideBarContainer = styled(motion.div)`
         top: 0;
         left: 0;
         width: 130px;
-         border-bottom-left-radius:0em;
+         border-radius:0em;
     }
     `;
     const NavItem = styled.div`

@@ -69,6 +69,9 @@ color: #ffff;
 box-shadow: -18px -20px 24px rgb(22 74 165 / 25%), -1px -8px 6px rgba(0, 0, 0, 0.1);
 border-radius: 1em;
 height: 90vh;
+@media only screen and (max-width: 720px) {
+    height: 100vh;
+  }
 `
 const MotionContainer = styled(motion.div)`
   max-height: 100vh;
@@ -82,7 +85,7 @@ const MotionContainer = styled(motion.div)`
 
   @media only screen and (max-width: 720px) {
     width: 100%;
-    border-radius: 1em;
+    border-radius: 0;
   }
 `;
 const TopSection = styled.div`
@@ -91,6 +94,9 @@ flex-direction: row;
 justify-content: space-around;
 overflow: hidden;
 width: 90vw;
+ @media only screen and (max-width: 720px) {
+   width: 100vw;
+  }
 `
 const Navbar = styled.div`
   width: 75%;
@@ -99,6 +105,7 @@ const Navbar = styled.div`
   @media only screen and (max-width: 720px) {
     display: flex;
     padding: 1em;
+    height: 0px;
     justify-content: space-between;
     svg{
       cursor: pointer;

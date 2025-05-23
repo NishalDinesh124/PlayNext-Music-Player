@@ -13,7 +13,9 @@ export default function Footer() {
     handleSeek,
     currentTime,
     duration,
-    currentSongImg
+    currentSongImg,
+    handleNext,
+    handlePrevious,
   } = usePlayer();
 
   const formatTime = (time) => {
@@ -34,11 +36,11 @@ export default function Footer() {
       </IconSection>
 
       <Controllers>
-        <MdSkipPrevious />
+        <MdSkipPrevious onClick={handlePrevious} />
         <span onClick={() => togglePlay(null, null)}>
           {isPlaying ? <AiTwotonePauseCircle /> : <AiTwotonePlayCircle />}
         </span>
-        <MdSkipNext />
+        <MdSkipNext onClick={handleNext}/>
       </Controllers>
 
       <InfoSection>
