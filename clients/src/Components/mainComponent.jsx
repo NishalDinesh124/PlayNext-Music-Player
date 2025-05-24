@@ -341,7 +341,7 @@ const InfoSection = styled.div`
 `;
 
 const MusicSection = styled.div`
-
+width: 457px;
    flex: 1;
   overflow-y: auto;
   padding-right: 8px;
@@ -356,6 +356,10 @@ const MusicSection = styled.div`
     svg {
       visibility: visible;
     }
+  }
+  @media only screen and (max-width: 530px) {
+    max-width: 300px;
+    
   }
 `;
 
