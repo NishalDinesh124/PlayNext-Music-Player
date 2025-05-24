@@ -177,6 +177,9 @@ const Container = styled.div`
   gap: 1.5em;
   width: 100%;
     align-items: center;
+    @media only screen and (max-width: 500px) {
+   align-items: stretch;
+  }
 `
 const Welcome = styled.div`
   display: flex;
@@ -341,7 +344,7 @@ const InfoSection = styled.div`
 `;
 
 const MusicSection = styled.div`
-width: 457px;
+width: 100%;
    flex: 1;
   overflow-y: auto;
   padding-right: 8px;
@@ -356,10 +359,6 @@ width: 457px;
     svg {
       visibility: visible;
     }
-  }
-  @media only screen and (max-width: 530px) {
-    max-width: 300px;
-    
   }
 `;
 

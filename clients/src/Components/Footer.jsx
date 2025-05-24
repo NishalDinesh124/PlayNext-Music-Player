@@ -16,6 +16,7 @@ export default function Footer() {
     currentSongImg,
     handleNext,
     handlePrevious,
+    artist
   } = usePlayer();
 
   const formatTime = (time) => {
@@ -31,7 +32,9 @@ export default function Footer() {
           <img src={currentSongImg} alt="" />
         </ImgSection>
         <SongTitleContainer>
+          
           <ScrollingText>{currentSongTitle}</ScrollingText>
+          <span style={{fontSize :'15px', color: 'grey'}}>{artist}</span>
         </SongTitleContainer>
       </IconSection>
 
@@ -93,7 +96,9 @@ const scrollText = keyframes`
 
 const SongTitleContainer = styled.div`
   min-width: 100px;
+  gap: 1em;
   display: flex;
+  flex-direction: column;
   align-items: center;
   overflow: hidden;
   white-space: nowrap;
@@ -108,16 +113,16 @@ const ScrollingText = styled.div`
 
   @media only screen and (max-width: 720px) {
     padding-left: 100%;
-    animation: ${scrollText} 10s linear infinite;
+    animation: ${scrollText} 8s linear infinite;
   }
 `;
 
 const IconSection = styled.div`
-  padding: 3vh;
   display: flex;
   gap: 1em;
 `;
 const InfoSection = styled.div`
+padding-left: 3em;
   width: 100%;
   margin-left: 5px;
   min-width: 240px;

@@ -25,7 +25,7 @@ export const PlayerProvider = ({ children }) => {
     const [likedSongs, setLikedSongs] = useState([]);
     const [search, setSearch] = useState(""); // search states
     const [activeTab, setActiveTab] = useState("home") //setting home/playlist component accordingly
-    const [sidebar, setSidebar] = useState(true) //setting sidebar visibility
+    const [sidebar, setSidebar] = useState(false) //setting sidebar visibility
     const [filteredSongs, setFilteredSongs] = useState([]);// filtredsongs with liked and api songs
     const [currentIndex, setCurrentIndex] = useState(null); // current playing song index
 

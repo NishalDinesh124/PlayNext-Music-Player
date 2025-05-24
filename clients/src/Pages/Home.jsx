@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { usePlayer } from '../Contexts/PlayerContext';
 import Playlist from '../Components/Playlist';
 import Liked from '../Components/Liked';
-import { RiMenuUnfold2Fill } from "react-icons/ri";
+import { CiMenuBurger } from "react-icons/ci";
 import { PiPlayBold } from "react-icons/pi";
 
 export default function Home() {
@@ -30,13 +30,13 @@ export default function Home() {
                 <SideBar/>
                 <MotionContainer>   
                 <Navbar>
-                    <Brand>
+                    {/* <Brand>
                       <PiPlayBold />
                       <Name>
                         PlayNext<i>Music Player</i>
                       </Name>
-                    </Brand>
-                    <RiMenuUnfold2Fill onClick={()=>{setSidebar(!sidebar)}}/>
+                    </Brand> */}
+                    <CiMenuBurger onClick={()=>{setSidebar(!sidebar)}} />
                   </Navbar>
 
                 {activeTab === "home" ? (<MainComponent />) : 
@@ -64,6 +64,7 @@ const MainComponentWrapper = styled.div`
 position: relative;
 display: grid;
 grid-template-rows: 100%;
+background-color: #202333;
 font-family: inter;
 color: #ffff;
 box-shadow: -18px -20px 24px rgb(22 74 165 / 25%), -1px -8px 6px rgba(0, 0, 0, 0.1);
@@ -100,17 +101,17 @@ width: 90vw;
 `
 const Navbar = styled.div`
   width: 75%;
-  display: none;
-
-  @media only screen and (max-width: 720px) {
-    display: flex;
-    padding: 1em;
+display: flex;
+ padding: 1em;
     height: 0px;
-    justify-content: space-between;
+    justify-content: end;
     svg{
       cursor: pointer;
       font-size: 30px;
     }
+  @media only screen and (max-width: 720px) {
+    
+   
   }
 `;
 
