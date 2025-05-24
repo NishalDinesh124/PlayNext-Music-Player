@@ -42,8 +42,6 @@ export const PlayerProvider = ({ children }) => {
             setCurrentIndex(index); // Set index when playing from list
         }
         if (currentSongUrl === songUrl) {
-            console.log("First if");
-
             if (isPlaying) {
                 audio.pause();
                 setIsPlaying(false);
@@ -52,8 +50,6 @@ export const PlayerProvider = ({ children }) => {
                 setIsPlaying(true);
             }
         } else if (songUrl === null) {
-            console.log("second if");
-
             if (isPlaying) {
                 audio.pause();
                 setIsPlaying(false)
@@ -62,14 +58,11 @@ export const PlayerProvider = ({ children }) => {
                 audio.play().catch((err) => console.error("Play error:", err));
             }
         } else {
-            console.log("Third if");
             setCurrentSongUrl(songUrl);
             setCurrentSongTitle(songTitle)
             setCurrentSongImage(songImg)
             setArtist(artist)
             setIsPlaying(true);
-            console.log(currentSongUrl);
-
             // Small timeout to wait for src update
             setTimeout(() => {
                 if (audioRef.current) {
@@ -125,7 +118,6 @@ export const PlayerProvider = ({ children }) => {
 
 
     useEffect(() => {
-        console.log("Error adding song");
         getCurrentUser();// getting user from local storage
         getApiSongs(); //getting songs from backend
         handleGetLikedSongs(); // getting liked songs from database
@@ -142,7 +134,6 @@ export const PlayerProvider = ({ children }) => {
         try {
             axios.get(getSongsRoute)
                 .then(response => {
-                    console.log(response.data.results);
                     setApiSongs(response.data.results);
                 })
                 .catch(error => {
@@ -155,15 +146,10 @@ export const PlayerProvider = ({ children }) => {
     }
     const handleGetLikedSongs = async () => {  /// getting liked songs
         try {
-            console.log("Liked songs fetching");
-
-            const user = await JSON.parse(localStorage.getItem('playnext-user'));
-            console.log(user._id);
+        const user = await JSON.parse(localStorage.getItem('playnext-user'));
             const response = await axios.post(getLikedSongs, {
                 userId: user._id
             })
-            console.log(response.data);
-
             setLikedSongs(response.data)
         } catch (err) {
             console.log("An error occured", err);
@@ -174,7 +160,6 @@ export const PlayerProvider = ({ children }) => {
 
     // ==== Categorising liked and unliked songs from API ====//
     useEffect(() => {
-        console.log("Error adding song");
         const allSongsMap = new Map();
 
         apiSongs.forEach(song => {

@@ -23,9 +23,7 @@ module.exports.login = async (req, res, next) => {
 module.exports.register = async (req, res, next) => {
     try {
         const { username, email, password } = req.body;
-        const emailCheck = await Users.findOne({ email });
-        console.log("Register call");
-        
+        const emailCheck = await Users.findOne({ email });    
         if (emailCheck)
             return res.json({ msg: "Email already exist", status: false });
         const hashedPassword = await bcrypt.hash(password, 10);

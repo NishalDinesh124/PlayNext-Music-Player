@@ -18,7 +18,6 @@ export default function Liked() {
   } = usePlayer();
 
   useEffect(()=>{
-    console.log("Error adding song");
     handleGetLikedSongs();
   },[])
 

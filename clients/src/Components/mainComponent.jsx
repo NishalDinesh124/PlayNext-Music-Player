@@ -31,7 +31,6 @@ export default function MainComponent() {
 
   // getting user from local storage
   useEffect(() => {
-    console.log("Error adding song");
     const getCurrentUser = async () => {
       if (!localStorage.getItem('playnext-user')) {
         navigate("/auth");
@@ -48,8 +47,6 @@ export default function MainComponent() {
 
 
   const handleAddToLiked = async (title, url, img, artist) => { // handle adding to liked songs
-    console.log("Liked functioning");
-
     // update local state of all songs for quick  liked button effect
     setFilteredSongs(prevSongs =>
       prevSongs.map(song =>
@@ -72,7 +69,6 @@ export default function MainComponent() {
         toast.error("Error adding song to playlist");
       }
     } catch (err) {
-      console.log("Error adding song");
       toast.error("Error adding song to playlist")
     }
   };

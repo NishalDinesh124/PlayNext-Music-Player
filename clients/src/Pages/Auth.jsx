@@ -47,22 +47,17 @@ export default function AuthPage() {
   //Handling user Registeration
 const handleRegister =async (e)=>{
   e.preventDefault();
-  console.log("Register call");
-  
   try{
     if(confirmPassword !== password){
       toast.error("Password mismatch");
       return;
     }  
-    if(handleRegisterValidation()){
-      console.log("Working");
-      
+    if(handleRegisterValidation()){  
 const res =await axios.post(registerRoute,{
     username : userName,
     email,
     password
   })
-  console.log(res);
     if (res.data.status === false) {
         toast.error(res.data.msg);
       }
@@ -89,8 +84,6 @@ const data =await axios.post(loginRoute,{
     email,
     password
   })
-  console.log(data);
-  
     if (data.data.status === false) {
         toast.error(data.data.msg);
       }
