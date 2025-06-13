@@ -44,7 +44,7 @@ export default function MainComponent() {
       setIsLoadingSongs(false);
     }, 1000); // simulate loading for 1s
     return () => clearTimeout(timeout);
-  }, [filteredSongs]);
+  }, []);
 
   const handleAddToLiked = async (title, url, img, artist) => {
     if(!localStorage.getItem('playnext-user')){
