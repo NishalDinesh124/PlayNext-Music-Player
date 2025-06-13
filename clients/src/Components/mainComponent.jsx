@@ -9,6 +9,8 @@ import { usePlayer } from '../Contexts/PlayerContext';
 import { useNavigate } from 'react-router-dom';
 import { IoIosSearch } from "react-icons/io";
 
+// ... your imports remain the same ...
+
 export default function MainComponent() {
   const {
     filteredSongs,
@@ -24,32 +26,22 @@ export default function MainComponent() {
     setSearch,
     setFilteredSongs,
   } = usePlayer();
+
   const navigate = useNavigate();
   const [isLoadingSongs, setIsLoadingSongs] = useState(true);
 
-  // // get user from local storage
-  // useEffect(() => {
-  //   const getCurrentUser = async () => {  
-  //       setCurrentUser(
-  //         await JSON.parse(localStorage.getItem('playnext-user'))
-  //       );
-  //   };
-  //   getCurrentUser();
-  // }, [navigate]);
-
-  // Simulate songs loading delay
   useEffect(() => {
-    setIsLoadingSongs(true);
-    const timeout = setTimeout(() => {
+    // simulate fetch delay
+    const timer = setTimeout(() => {
       setIsLoadingSongs(false);
-    }, 1000); // simulate loading for 1s
-    return () => clearTimeout(timeout);
-  }, []);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [filteredSongs]);
 
   const handleAddToLiked = async (title, url, img, artist) => {
-    if(!localStorage.getItem('playnext-user')){
-      navigate('/auth')
-      return
+    if (!localStorage.getItem('playnext-user')) {
+      navigate('/auth');
+      return;
     }
     setFilteredSongs(prevSongs =>
       prevSongs.map(song =>
@@ -58,22 +50,18 @@ export default function MainComponent() {
     );
     try {
       const res = await axios.post(addToLiked, {
-        title,
-        url,
-        img,
-        artist,
-        user: currentUser._id
+        title, url, img, artist, user: currentUser._id
       });
-      res.data.status ? toast.success("Song added to playlist") : toast.error("Error adding song to playlist");
+      res.data.status ? toast.success("Song added to playlist") : toast.error("Error adding song");
     } catch (err) {
-      toast.error("Error adding song to playlist");
+      toast.error("Error adding song");
     }
   };
 
   const handleSongDislike = async (url) => {
-    if(!localStorage.getItem('playnext-user')){
-      navigate('/auth')
-      return
+    if (!localStorage.getItem('playnext-user')) {
+      navigate('/auth');
+      return;
     }
     setFilteredSongs(prevSongs =>
       prevSongs.map(song =>
@@ -82,9 +70,9 @@ export default function MainComponent() {
     );
     try {
       const res = await axios.post(dislikeRoute, { url });
-      res.data.status ? toast.success("Song removed from playlist") : toast.error("Error removing song from playlist");
+      res.data.status ? toast.success("Removed from playlist") : toast.error("Error removing song");
     } catch (err) {
-      toast.error("Error removing song from playlist");
+      toast.error("Error removing song");
     }
   };
 
@@ -122,34 +110,33 @@ export default function MainComponent() {
       <MusicSection>
         {isLoadingSongs ? (
           <LoaderWrapper><Spinner /></LoaderWrapper>
+        ) : filteredSongs.length > 0 ? (
+          filteredSongs.map((song, index) => (
+            <Contents key={index} delay={index * 0.1}>
+              <Song>
+                <span onClick={() => togglePlay(song.audioUrl, song.title, song.img, song.artist, index)}>
+                  {isPlaying && currentSongUrl === song.audioUrl ? <IoIosPause /> : <IoIosPlay />}
+                </span>
+                <span>{song.title}</span>
+              </Song>
+              {song.isLiked ? (
+                <FaHeart style={{ color: "rgb(123, 77, 247)", fontSize: '16px' }} onClick={() => handleSongDislike(song.audioUrl)} />
+              ) : (
+                <FaRegHeart onClick={() => handleAddToLiked(song.title, song.audioUrl, song.img, song.artist)} />
+              )}
+              <Time>0:30</Time>
+            </Contents>
+          ))
         ) : (
-          filteredSongs.length > 0 ? (
-            filteredSongs.map((song, index) => (
-              <Contents key={index} delay={index * 0.1}>
-                <Song>
-                  <span onClick={() => togglePlay(song.audioUrl, song.title, song.img, song.artist, index)}>
-                    {isPlaying && currentSongUrl === song.audioUrl ? <IoIosPause /> : <IoIosPlay />}
-                  </span>
-                  <span>{song.title}</span>
-                </Song>
-                {song.isLiked ? (
-                  <FaHeart style={{ color: "rgb(123, 77, 247)", fontSize: '16px' }} onClick={() => handleSongDislike(song.audioUrl)} />
-                ) : (
-                  <FaRegHeart onClick={() => handleAddToLiked(song.title, song.audioUrl, song.img, song.artist)} />
-                )}
-                <Time>0:30</Time>
-              </Contents>
-            ))
-          ) : (
-            <div style={{ height: '260px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#aaa' }}>
-              No results found
-            </div>
-          )
+          <div style={{ height: '260px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#aaa' }}>
+            No results found
+          </div>
         )}
       </MusicSection>
     </Container>
   );
 }
+
 
 // Styled-components and animation
 const fadeInUp = keyframes`
