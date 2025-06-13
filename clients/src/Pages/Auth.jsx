@@ -65,7 +65,7 @@ const res =await axios.post(registerRoute,{
         toast.success("Login successfull");
         localStorage.setItem('playnext-user', JSON.stringify(res.data.user))
         navigate('/');
-      }
+        window.location.reload()      }
     }
 
   }catch(err){
@@ -91,6 +91,7 @@ const data =await axios.post(loginRoute,{
         toast.success("Login successfull");
         localStorage.setItem('playnext-user', JSON.stringify(data.data.user))
         navigate('/');
+        window.location.reload()   
       }
     }
 

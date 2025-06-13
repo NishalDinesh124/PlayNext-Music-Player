@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 import { dislikeRoute } from '../Utils/APIRoutes';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 export default function Liked() {
   const {
@@ -16,8 +17,13 @@ export default function Liked() {
     likedSongs,
     handleGetLikedSongs,
   } = usePlayer();
+  const navigate = useNavigate();
 
   useEffect(()=>{
+    if(!localStorage.getItem('playnext-user')){
+      navigate('/auth')
+      return
+    }
     handleGetLikedSongs();
   },[])
 
