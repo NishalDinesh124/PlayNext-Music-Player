@@ -8,7 +8,7 @@ const songsRoutes = require('./Routes/song')
 const app = express();
 
 
-const allowedOrigin = "http://localhost:3000"
+const allowedOrigin = "https://play-next-music-player.vercel.app"
 // CORS setup
 app.use(cors({
   origin: allowedOrigin,
