@@ -48,11 +48,7 @@ export default function Liked() {
       </TopBar>
 
       {likedSongs.length > 0 ? (
-        <MusicSection
-          variants={listVariant}
-          initial="hidden"
-          animate="visible"
-        >
+        <MusicSection variants={listVariant} initial="hidden" animate="visible">
           {likedSongs.map((song, index) => (
             <SongCard
               key={index}
@@ -134,12 +130,13 @@ const fadeIn = keyframes`
 const LikedContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: 100%;
   height: 100%;
+  padding: 3em 2em;
+  width: 100%;
   background: radial-gradient(circle at top, #141629, #0b0b18 70%);
-  padding: 2.5em 2em;
   color: #fff;
-  overflow-y: hidden;
+  overflow: hidden;
+  box-sizing: border-box;
 
   @media (max-width: 720px) {
     padding: 1.5em;
