@@ -28,11 +28,11 @@ export default function MainComponent() {
   const [isLoadingSongs, setIsLoadingSongs] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoadingSongs(false);
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, []);
+  if (filteredSongs && filteredSongs.length > 0) {
+    setIsLoadingSongs(false);
+  }
+}, [filteredSongs]);
+
 
   const handleAddToLiked = async (title, url, img, artist) => {
     if (!localStorage.getItem("playnext-user")) {
