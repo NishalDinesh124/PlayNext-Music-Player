@@ -1,5 +1,5 @@
-import React from 'react'
-import styled, { keyframes } from 'styled-components'
+import React from 'react';
+import styled, { keyframes } from 'styled-components';
 import { AiTwotonePlayCircle, AiTwotonePauseCircle } from "react-icons/ai";
 import { MdSkipNext, MdSkipPrevious } from "react-icons/md";
 import { usePlayer } from '../Contexts/PlayerContext';
@@ -27,26 +27,25 @@ export default function Footer() {
 
   return (
     <ControlSection>
-      <IconSection>
+      <SongDetails>
         <ImgSection>
-          <img src={currentSongImg} alt="" />
+          <img src={currentSongImg} alt="cover" />
         </ImgSection>
         <SongTitleContainer>
-          
           <ScrollingText>{currentSongTitle}</ScrollingText>
-          <span style={{fontSize :'15px', color: 'grey'}}>{artist}</span>
+          <Artist>{artist}</Artist>
         </SongTitleContainer>
-      </IconSection>
+      </SongDetails>
 
-      <Controllers>
-        <MdSkipPrevious onClick={handlePrevious} />
-        <span onClick={() => togglePlay(null, null)}>
-          {isPlaying ? <AiTwotonePauseCircle /> : <AiTwotonePlayCircle />}
-        </span>
-        <MdSkipNext onClick={handleNext}/>
-      </Controllers>
+      <CenterControls>
+        <Controllers>
+          <MdSkipPrevious onClick={handlePrevious} />
+          <span onClick={() => togglePlay(null, null)}>
+            {isPlaying ? <AiTwotonePauseCircle /> : <AiTwotonePlayCircle />}
+          </span>
+          <MdSkipNext onClick={handleNext} />
+        </Controllers>
 
-      <InfoSection>
         <ProgressWrapper>
           <Time>{formatTime(currentTime)}</Time>
           <ProgressBarContainer
@@ -61,124 +60,149 @@ export default function Footer() {
           </ProgressBarContainer>
           <Time>{formatTime(duration)}</Time>
         </ProgressWrapper>
-      </InfoSection>
+      </CenterControls>
     </ControlSection>
   );
 }
 
-// STYLES
+// ====================== STYLES ====================== //
 
-const ControlSection = styled.div`
+const ControlSection = styled.footer`
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #171927;
-  display: grid;
-  grid-template-columns: 56% 44%;
-  align-items: center;
+  display: flex;
   justify-content: space-between;
-  padding: 0 1em;
-  height: 125px;
-  border-top: solid 1px #2e2f4b;
+  align-items: center;
+  background-color: #202333;
+  padding: 0.6em 1em;
+  border-top: 1px solid #2e2f4b;
   border-bottom-left-radius: 1em;
   border-bottom-right-radius: 1em;
-   @media only screen and (max-width: 720px) {
-   height: 115px;
+  color: #fff;
+  height: 90px;
+  box-shadow: 0 -4px 18px rgba(0, 0, 0, 0.25);
+  gap: 1em;
+
+  @media (max-width: 720px) {
+    flex-direction: column;
+    height: auto;
+    padding: 0.6em 0.8em 0.8em;
+    gap: 0.4em;
   }
 `;
 
-
-const scrollText = keyframes`
-  0% { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
-`;
-
-const SongTitleContainer = styled.div`
-  min-width: 100px;
-  gap: 1em;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  overflow: hidden;
-  white-space: nowrap;
-  position: relative;
-`;
-
-const ScrollingText = styled.div`
-  display: inline-block;
-  color: white;
-  font-size: 1rem;
-  white-space: nowrap;
-
-  @media only screen and (max-width: 720px) {
-    padding-left: 100%;
-    animation: ${scrollText} 8s linear infinite;
-  }
-`;
-
-const IconSection = styled.div`
-  display: flex;
-  gap: 1em;
-`;
-const InfoSection = styled.div`
-padding-left: 3em;
-  width: 100%;
-  margin-left: 5px;
-  min-width: 240px;
+const SongDetails = styled.div`
   display: flex;
   align-items: center;
-`;
+  gap: 0.8em;
+  flex: 1;
 
-
-const Controllers = styled.div`
-  margin-left: 2em;
-
-  svg {
-    font-size: xxx-large;
-  }
-
-  @media (min-width: 385px) and (max-width: 720px) {
-    svg {
-      font-size: xx-large;
-    }
-  }
-
-  @media only screen and (max-width: 385px) {
-    svg {
-      font-size: x-large;
-    }
+  @media (max-width: 720px) {
+    gap: 0.5em;
   }
 `;
 
 const ImgSection = styled.div`
   width: 50px;
   height: 50px;
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25), 0 4px 6px rgba(0, 0, 0, 0.1);
-  border-radius: 3em;
+  border-radius: 50%;
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 
   img {
-    max-height: 100%;
-    max-width: 100%;
-    object-fit: contain;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  @media (max-width: 720px) {
+    width: 45px;
+    height: 45px;
+  }
+`;
+
+const SongTitleContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  align-items: flex-start;
+
+  @media (max-width: 720px) {
+    align-items: center;
+  }
+`;
+
+const scrollText = keyframes`
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+`;
+
+const ScrollingText = styled.div`
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #fff;
+  white-space: nowrap;
+
+  @media (max-width: 720px) {
+    padding-left: 100%;
+    animation: ${scrollText} 10s linear infinite;
+  }
+`;
+
+const Artist = styled.span`
+  font-size: 0.8rem;
+  color: #9ea1b3;
+`;
+
+const CenterControls = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 2;
+  width: 100%;
+`;
+
+const Controllers = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+
+  svg {
+    font-size: 2.2rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: scale(1.08);
+      color: #a48df3;
+    }
+  }
+
+  @media (max-width: 720px) {
+    svg {
+      font-size: 1.8rem;
+    }
   }
 `;
 
 const ProgressWrapper = styled.div`
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   width: 100%;
+  margin-top: 0.4em;
+
+  @media (max-width: 720px) {
+    gap: 6px;
+  }
 `;
 
 const ProgressBarContainer = styled.div`
   flex: 1;
-  height: 6px;
+  height: 5px;
   background-color: #2e2f4b;
   border-radius: 5px;
   overflow: hidden;
@@ -187,13 +211,14 @@ const ProgressBarContainer = styled.div`
 
 const Progress = styled.div`
   height: 100%;
-  width: ${props => props.progress}%;
-  background-color: #ffffff;
+  width: ${({ progress }) => progress}%;
+  background-color: #a48df3;
   transition: width 0.2s ease;
 `;
 
 const Time = styled.span`
-  color: #ccc;
-  font-size: 0.8rem;
-  min-width: 40px;
+  color: #b5b8cc;
+  font-size: 0.75rem;
+  min-width: 34px;
+  text-align: center;
 `;

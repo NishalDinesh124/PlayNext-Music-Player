@@ -8,7 +8,7 @@ const songsRoutes = require('./Routes/song')
 const app = express();
 
 
-const allowedOrigin = "https://play-next-music-player.vercel.app"
+const allowedOrigin = "http://localhost:3000"
 // CORS setup
 app.use(cors({
   origin: allowedOrigin,
@@ -21,7 +21,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/songs', songsRoutes);
 
 const uri = process.env.MONGO_URL;
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 7000;
 
 const startServer = async () => {
   try {

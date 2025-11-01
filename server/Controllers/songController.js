@@ -12,7 +12,6 @@ module.exports.getSongs = async (req, res, next) => {
     }
 }
 
-
 module.exports.addToLiked = async (req, res, next) => {
     try {
         const { title, url, img, artist, user } = req.body;
