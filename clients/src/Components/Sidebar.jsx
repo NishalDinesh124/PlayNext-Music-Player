@@ -1,11 +1,11 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 import { PiPlayBold } from "react-icons/pi";
-import { usePlayer } from '../Contexts/PlayerContext';
-import { motion } from 'framer-motion';
+import { usePlayer } from "../Contexts/PlayerContext";
+import { motion } from "framer-motion";
 
 export default function SideBar() {
-  const { setActiveTab, sidebar, activeTab } = usePlayer();
+  const { setActiveTab,   sidebar, activeTab } = usePlayer();
 
   return (
     <SideBarContainer
@@ -25,25 +25,25 @@ export default function SideBar() {
 
       <Nav>
         <NavItem
-          active={activeTab === "home"}
+          $active={activeTab === "home"}
           onClick={() => setActiveTab("home")}
         >
           Home
         </NavItem>
         <NavItem
-          active={activeTab === "search"}
+          $active={activeTab === "search"}
           onClick={() => setActiveTab("home")}
         >
           Search
         </NavItem>
         <NavItem
-          active={activeTab === "library"}
+          $active={activeTab === "library"}
           onClick={() => setActiveTab("library")}
         >
           Library
         </NavItem>
         <NavItem
-          active={activeTab === "liked"} ///=== Later change with playlists page ===////
+          $active={activeTab === "liked"} ///=== Later change with playlists page ===////
           onClick={() => setActiveTab("liked")}
         >
           Liked songs
@@ -119,13 +119,15 @@ const Nav = styled.div`
 `;
 
 const NavItem = styled.div`
-width: 60%;
+  width: 60%;
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
-  color: ${({ active }) => (active ? '#fff' : '#bbb')};
-  background: ${({ active }) => (active ? 'rgba(123, 77, 247, 0.1)' : 'transparent')};
-  border-left: ${({ active }) => (active ? '4px solid rgb(123, 77, 247)' : '4px solid transparent')};
+  color: ${({ $active }) => ($active ? "#fff" : "#bbb")};
+  background: ${({ $active }) =>
+    $active ? "rgba(123, 77, 247, 0.1)" : "transparent"};
+  border-left: ${({ $active }) =>
+    $active ? "4px solid rgb(123, 77, 247)" : "4px solid transparent"};
   padding: 0.6em 1em;
   border-radius: 8px;
   transition: all 0.25s ease;

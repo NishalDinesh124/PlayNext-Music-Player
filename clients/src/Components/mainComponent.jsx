@@ -268,12 +268,15 @@ const WelcomeSection = styled.div`
 `;
 
 const SearchPanel = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: relative;
-  max-width: 500px;
+  max-width: 900px;
 
   .search-icon {
     position: absolute;
-    left: 14px;
+    left: 18px;
     top: 50%;
     transform: translateY(-50%);
     color: #bbb;
@@ -282,13 +285,12 @@ const SearchPanel = styled.div`
 `;
 
 const SearchInput = styled.input`
-  width: 100%;
   height: 38px;
   border-radius: 25px;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  padding-left: 42px;
   color: #fff;
+  padding: 0em 3em;
   font-size: 16px;
   transition: 0.3s;
   &:focus {
@@ -407,4 +409,3 @@ const EmptyState = styled.div`
   align-items: center;
   justify-content: center;
 `;
-

@@ -1,15 +1,15 @@
-import React from 'react';
-import styled from 'styled-components';
-import { motion } from 'framer-motion';
-import { usePlayer } from '../Contexts/PlayerContext';
+import React from "react";
+import styled from "styled-components";
+import { motion } from "framer-motion";
+import { usePlayer } from "../Contexts/PlayerContext";
 
 const imageList = [
-  { src: '/happy.svg', title: 'Liked Songs' },
-  { src: '/happy1.svg', title: 'Workout Vibes' },
-  { src: '/happy2.svg', title: 'Chill Beats' },
-  { src: '/happy3.svg', title: 'Top Hits' },
-  { src: '/happy4.svg', title: 'Focus Flow' },
-  { src: '/happy5.svg', title: 'Party Mix' },
+  { src: "/happy.svg", title: "Liked Songs" },
+  { src: "/happy1.svg", title: "Workout Vibes" },
+  { src: "/happy2.svg", title: "Chill Beats" },
+  { src: "/happy3.svg", title: "Top Hits" },
+  { src: "/happy4.svg", title: "Focus Flow" },
+  { src: "/happy5.svg", title: "Party Mix" },
 ];
 
 // Animation variants
@@ -21,7 +21,7 @@ const contentVariants = {
     transition: {
       delay: i * 0.1,
       duration: 0.6,
-      ease: 'easeOut',
+      ease: "easeOut",
     },
   }),
 };
@@ -38,7 +38,7 @@ export default function Playlist() {
           variants={contentVariants}
           initial="hidden"
           animate="visible"
-          onClick={() => index === 0 && setActiveTab('liked')}
+          onClick={() => index === 0 && setActiveTab("liked")}
         >
           <ImgSection>
             <img src={src} alt={`Album Cover ${index + 1}`} />

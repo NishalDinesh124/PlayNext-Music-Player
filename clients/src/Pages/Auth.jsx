@@ -14,104 +14,116 @@ export default function AuthPage() {
   const [email, setEmail] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-
   // validating register input fields
 
-    const handleRegisterValidation = () => {
+  const handleRegisterValidation = () => {
     if (userName === "") {
       toast.error("Username required");
       return false;
     } else if (password === "") {
-      toast.error("Password required")
+      toast.error("Password required");
       return false;
-    } else if(email === ""){
+    } else if (email === "") {
       toast.error("Email required");
       return false;
-    }else{
-      return true
+    } else {
+      return true;
     }
-  }
-// validating login input fields
-   const handleLoginValidation = () => {
+  };
+  // validating login input fields
+  const handleLoginValidation = () => {
     if (password === "") {
       toast.error("Password required");
       return false;
-    } else if(email === ""){
+    } else if (email === "") {
       toast.error("Email required");
       return false;
-    }else{
+    } else {
       return true;
     }
-  }
+  };
 
   //Handling user Registeration
-const handleRegister =async (e)=>{
-  e.preventDefault();
-  try{
-    if(confirmPassword !== password){
-      toast.error("Password mismatch");
-      return;
-    }  
-    if(handleRegisterValidation()){  
-const res =await axios.post(registerRoute,{
-    username : userName,
-    email,
-    password
-  })
-    if (res.data.status === false) {
-        toast.error(res.data.msg);
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    try {
+      if (confirmPassword !== password) {
+        toast.error("Password mismatch");
+        return;
       }
-      if (res.data.status === true) {
-        toast.success("Login successfull");
-        localStorage.setItem('playnext-user', JSON.stringify(res.data.user))
-        navigate('/');
-        window.location.reload()      }
+      if (handleRegisterValidation()) {
+        const res = await axios.post(registerRoute, {
+          username: userName,
+          email,
+          password,
+        });
+        if (res.data.status === false) {
+          toast.error(res.data.msg);
+        }
+        if (res.data.status === true) {
+          toast.success("Login successfull");
+          localStorage.setItem("playnext-user", JSON.stringify(res.data.user));
+          navigate("/");
+          window.location.reload();
+        }
+      }
+    } catch (err) {
+      console.log("An error occured");
+      alert(err);
     }
+  };
 
-  }catch(err){
-    console.log("An error occured");
-    alert(err);
-  }
-  
-}
-
-// handling user login
-const handleLogin =async (e)=>{
-  e.preventDefault();
-  try{
-    if(handleLoginValidation()){
-const data =await axios.post(loginRoute,{
-    email,
-    password
-  })
-    if (data.data.status === false) {
-        toast.error(data.data.msg);
+  // handling user login
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      if (handleLoginValidation()) {
+        const data = await axios.post(loginRoute, {
+          email,
+          password,
+        });
+        if (data.data.status === false) {
+          toast.error(data.data.msg);
+        }
+        if (data.data.status === true) {
+          toast.success("Login successfull");
+          localStorage.setItem("playnext-user", JSON.stringify(data.data.user));
+          navigate("/");
+          window.location.reload();
+        }
       }
-      if (data.data.status === true) {
-        toast.success("Login successfull");
-        localStorage.setItem('playnext-user', JSON.stringify(data.data.user))
-        navigate('/');
-        window.location.reload()   
-      }
+    } catch (err) {
+      console.log("An error occured");
+      alert(err);
     }
-
-  }catch(err){
-    console.log("An error occured");
-    alert(err);
-  }
-}
+  };
   return (
     <FormContainer>
       <FormWrapper isLogin={isLogin}>
         {/* Login Form */}
         <AuthForm>
           <h2>Login</h2>
-          <input onChange={(e)=>{setEmail(e.target.value)}} type="email" placeholder="Email" />
-          <input onChange={(e)=>{setPassword(e.target.value)}} type="password" placeholder="Password" />
+          <input
+            onChange={(e) => {
+              setEmail(e.target.value);
+            }}
+            type="email"
+            placeholder="Email"
+          />
+          <input
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
+            type="password"
+            placeholder="Password"
+          />
           <button onClick={handleLogin}>Login</button>
           <p>
             Don't have an account?{" "}
-            <span onClick={() => setIsLogin(false)} style={{ cursor: "pointer", color: "#007bff" }}>
+            <span
+              onClick={() => setIsLogin(false)}
+              style={{ cursor: "pointer", color: "#007bff" }}
+            >
               Register
             </span>
           </p>
@@ -120,14 +132,41 @@ const data =await axios.post(loginRoute,{
         {/* Register Form */}
         <AuthForm>
           <h2>Register</h2>
-          <input onChange={(e)=>{setUserName(e.target.value)}} type="text" placeholder="Username" />
-          <input onChange={(e)=>{setEmail(e.target.value)}} type="email" placeholder="Email" />
-          <input onChange={(e)=>{setPassword(e.target.value)}} type="password" placeholder="Password" />
-          <input onChange={(e)=>{setConfirmPassword(e.target.value)}} type="password" placeholder="Confirm Password" />
+          <input
+            onChange={(e) => {
+              setUserName(e.target.value);
+            }}
+            type="text"
+            placeholder="Username"
+          />
+          <input
+            onChange={(e) => {
+              setEmail(e.target.value);
+            }}
+            type="email"
+            placeholder="Email"
+          />
+          <input
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
+            type="password"
+            placeholder="Password"
+          />
+          <input
+            onChange={(e) => {
+              setConfirmPassword(e.target.value);
+            }}
+            type="password"
+            placeholder="Confirm Password"
+          />
           <button onClick={handleRegister}>Register</button>
           <p>
             Already have an account?{" "}
-            <span onClick={() => setIsLogin(true)} style={{ cursor: "pointer", color: "#007bff" }}>
+            <span
+              onClick={() => setIsLogin(true)}
+              style={{ cursor: "pointer", color: "#007bff" }}
+            >
               Login
             </span>
           </p>
@@ -138,17 +177,18 @@ const data =await axios.post(loginRoute,{
 }
 
 const FormContainer = styled.div`
-color: #ffff;
+  color: #ffff;
   position: relative;
   width: 360px;
   height: 460px;
   overflow: hidden;
   border-radius: 12px;
-  box-shadow: -18px -20px 24px rgb(22 74 165 / 25%), -1px -8px 6px rgba(0, 0, 0, 0.1);
- background-color: #202333;
+  box-shadow: -18px -20px 24px rgb(22 74 165 / 25%),
+    -1px -8px 6px rgba(0, 0, 0, 0.1);
+  background-color: #202333;
   @media only screen and (max-height: 490px) {
-        height: 100vh;
-    }
+    height: 100vh;
+  }
 `;
 
 const FormWrapper = styled.div`
@@ -156,7 +196,8 @@ const FormWrapper = styled.div`
   width: 200%;
   height: 100%;
   transition: transform 0.5s ease-in-out;
-  transform: ${(props) => (props.isLogin ? "translateX(0)" : "translateX(-50%)")};
+  transform: ${(props) =>
+    props.isLogin ? "translateX(0)" : "translateX(-50%)"};
 `;
 
 const AuthForm = styled.form`
@@ -177,14 +218,14 @@ const AuthForm = styled.form`
     padding: 12px;
     margin-bottom: 15px;
     border-radius: 6px;
-    border: 2px solid #7B4DF7;
+    border: 2px solid #7b4df7;
     font-size: 14px;
   }
 
   button {
     padding: 12px;
     border-radius: 6px;
-    background-color: #7B4DF7;
+    background-color: #7b4df7;
     color: white;
     font-weight: bold;
     border: none;

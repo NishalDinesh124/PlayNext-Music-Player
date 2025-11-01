@@ -30,7 +30,7 @@ export default function Home() {
 
         {/* Main Content */}
         <ContentWrapper>
-          <Navbar>  
+          <Navbar>
             <CiMenuBurger onClick={() => setSidebar(!sidebar)} />
           </Navbar>
 
@@ -89,7 +89,8 @@ const SideBarWrapper = styled.div`
     position: absolute;
     top: 0;
     left: 0;
-    transform: ${({ sidebar }) => (sidebar ? "translateX(0)" : "translateX(-100%)")};
+    transform: ${({ sidebar }) =>
+      sidebar ? "translateX(0)" : "translateX(-100%)"};
     z-index: 50;
     width: 220px;
   }
@@ -119,4 +120,3 @@ const Navbar = styled.div`
     display: none; /* Only show burger icon on mobile */
   }
 `;
-

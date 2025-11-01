@@ -25,7 +25,7 @@ export default function Liked() {
       return;
     }
     handleGetLikedSongs();
-  }, [navigate]);
+  }, [navigate, handleGetLikedSongs]);
 
   const handleSongDislike = async (url) => {
     try {
