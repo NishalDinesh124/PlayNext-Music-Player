@@ -52,9 +52,9 @@ export default function MainComponent() {
         artist,
         user: currentUser._id,
       });
-      res.data.status
-        ? toast.success("Song added to playlist")
-        : toast.error("Error adding song");
+     if(!res.data.status){
+      toast.error("Error adding song!, Please try again")
+     }
     } catch (err) {
       toast.error("Error adding song");
     }
@@ -72,9 +72,9 @@ export default function MainComponent() {
     );
     try {
       const res = await axios.post(dislikeRoute, { url });
-      res.data.status
-        ? toast.success("Removed from playlist")
-        : toast.error("Error removing song");
+      if(!res.data.status){
+        toast.error("Error removing song!")
+      }
     } catch (err) {
       toast.error("Error removing song");
     }

@@ -78,8 +78,6 @@ const ControlSection = styled.footer`
   background-color: #202333;
   padding: 0.6em 1em;
   border-top: 1px solid #2e2f4b;
-  border-bottom-left-radius: 1em;
-  border-bottom-right-radius: 1em;
   color: #fff;
   height: 90px;
   box-shadow: 0 -4px 18px rgba(0, 0, 0, 0.25);
@@ -171,7 +169,7 @@ const Controllers = styled.div`
   gap: 0.6em;
 
   svg {
-    font-size: 2.2rem;
+    font-size: 3rem;
     cursor: pointer;
     transition: all 0.2s ease;
 
@@ -183,7 +181,7 @@ const Controllers = styled.div`
 
   @media (max-width: 720px) {
     svg {
-      font-size: 1.8rem;
+      font-size: 2.2;
     }
   }
 `;
