@@ -8,7 +8,7 @@ const songsRoutes = require('./Routes/song')
 const app = express();
 
 
-const allowedOrigin = process.env.FRONT_END_URL
+const allowedOrigin = process.env.VERCEL_URL
 // CORS setup
 app.use(cors({
   origin: allowedOrigin,
